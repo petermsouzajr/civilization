@@ -37,13 +37,6 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     description: 'Gap between rich and poor.',
   },
   {
-    id: 'research-development',
-    name: 'Research & Development',
-    value: 0,
-    description:
-      'Investment in scientific research and technological development.',
-  },
-  {
     id: 'currency-inflation',
     name: 'Currency Inflation',
     value: 0,
@@ -56,16 +49,18 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     description: 'Cost of energy resources',
   },
   {
-    id: 'automation-level',
-    name: 'Automation Level',
-    value: 0,
-    description: 'Level of workplace automation',
-  },
-  {
     id: 'public-debt',
     name: 'Public Debt',
     value: 0,
     description: 'Level of public debt',
+  },
+  {
+    id: 'housing-cost',
+    name: 'Housing Cost',
+    value: 40,
+    description:
+      'Rising housing costs strain affordability and economic stability.',
+    category: 'Economic',
   },
 
   // Social Welfare Factors
@@ -93,6 +88,16 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     value: 0,
     description: 'Quality of public infrastructure',
   },
+  {
+    id: 'policing-deficiency',
+    name: 'Policing Deficiency',
+    value: 30,
+    description:
+      'Lack of law enforcement increases crime and reduces public safety.',
+    category: 'Social Welfare',
+  },
+
+  // Environmental Factors
   {
     id: 'environmental-protection',
     name: 'Environmental Protection',
@@ -197,7 +202,7 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     description: 'Level of societal chaos',
   },
 
-  // Fantasy Factors
+  // Fantasy Factors (at the bottom)
   {
     id: 'mana-storm-intensity',
     name: 'Mana Storm Intensity',
@@ -215,21 +220,5 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     name: 'Godzilla Rampage',
     value: 0,
     description: 'Frequency of giant monster attacks',
-  },
-  {
-    id: 'policing-deficiency',
-    name: 'Policing Deficiency',
-    value: 30,
-    description:
-      'Lack of law enforcement increases crime and reduces public safety.',
-    category: 'Social Welfare',
-  },
-  {
-    id: 'housing-cost',
-    name: 'Housing Cost',
-    value: 40,
-    description:
-      'Rising housing costs strain affordability and economic stability.',
-    category: 'Economic',
   },
 ];

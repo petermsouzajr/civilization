@@ -59,6 +59,13 @@ const PRESET_COLORS = {
     'bg-blue-100 hover:bg-blue-200 text-gray-900 border-blue-300',
   'Pre-Communist China':
     'bg-green-100 hover:bg-green-200 text-gray-900 border-green-300',
+  '2008 Housing Crash':
+    'bg-red-100 hover:bg-red-200 text-gray-900 border-red-300',
+  'The Black Death': 'bg-red-200 hover:bg-red-300 text-gray-900 border-red-400',
+  '2019 Coronavirus Outbreak':
+    'bg-amber-200 hover:bg-amber-300 text-gray-900 border-amber-400',
+  'Protestant Reformation':
+    'bg-indigo-200 hover:bg-indigo-300 text-gray-900 border-indigo-400',
 };
 
 const getStatusColor = (state: string) => {
