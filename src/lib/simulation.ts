@@ -35,10 +35,10 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   const graduatedPenalty = (
     value: number,
     threshold: number,
-    multiplier = 1
+    multiplier = 0.3
   ) => {
     return value > threshold
-      ? Math.min(30, (value - threshold) * multiplier)
+      ? Math.min(15, (value - threshold) * multiplier)
       : 0;
   };
 
@@ -50,6 +50,43 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   // New function to cap negative contributions
   const capNegativeContributions = (value: number) => {
     return Math.max(-50, value);
+  };
+
+  // New function to calculate total penalties for storm threshold
+  const calculateTotalPenalties = (factorMap: Map<string, number>): number => {
+    let total = 0;
+
+    // Core penalties
+    total += graduatedPenalty(factorMap.get('corruption') || 0, 50);
+    total += graduatedPenalty(factorMap.get('economic-inequality') || 0, 50);
+    total += graduatedPenalty(factorMap.get('closed-society') || 0, 50);
+
+    // Crisis penalties
+    total += graduatedPenalty(
+      factorMap.get('natural-disaster-frequency') || 0,
+      70
+    );
+    total += graduatedPenalty(factorMap.get('domestic-war-risk') || 0, 60);
+    total += graduatedPenalty(factorMap.get('self-defense-freedom') || 0, 80);
+
+    // Economic penalties
+    total += graduatedPenalty(factorMap.get('currency-inflation') || 0, 70);
+    total += graduatedPenalty(factorMap.get('energy-cost') || 0, 60);
+    total += graduatedPenalty(factorMap.get('automation-level') || 0, 70);
+    total += graduatedPenalty(factorMap.get('public-debt') || 0, 80);
+
+    return total;
+  };
+
+  // New function to apply storm threshold
+  const applyStormThreshold = (
+    value: number,
+    totalPenalties: number
+  ): number => {
+    if (totalPenalties < 150) {
+      return Math.max(10, value); // Minimum 10 unless storm threshold met
+    }
+    return value; // Allow 0 only in storm conditions
   };
 
   // Calculate corruption factor for government programs
@@ -105,201 +142,216 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
       ? Math.min(10, (factorMap.get('economic-inequality') || 0) / 10)
       : 0;
 
-  // Calculate fantasy effects with capped impact
+  // Calculate fantasy effects with tighter caps
   const manaStormEffect = Math.min(
-    20,
-    (factorMap.get('mana-storm-intensity') || 0) / 5
+    15,
+    (factorMap.get('mana-storm-intensity') || 0) / 6.67
   );
   const thanosSnapEffect = Math.min(
-    30,
-    ((factorMap.get('thanos-snap-probability') || 0) / 100) * 30
+    15,
+    ((factorMap.get('thanos-snap-probability') || 0) / 100) * 15
   );
   const godzillaEffect = Math.min(
-    20,
-    (factorMap.get('godzilla-rampage') || 0) / 5
+    15,
+    (factorMap.get('godzilla-rampage') || 0) / 6.67
   );
 
   // Calculate economic effects with capped impact
   const inflationEffect = Math.min(
-    30,
-    (factorMap.get('currency-inflation') || 0) / 3.33
+    15,
+    (factorMap.get('currency-inflation') || 0) / 6.67
   );
   const energyCostEffect = Math.min(
-    25,
-    (factorMap.get('energy-cost') || 0) / 4
+    15,
+    (factorMap.get('energy-cost') || 0) / 6.67
   );
   const automationEffect = Math.min(
-    20,
-    (factorMap.get('automation-level') || 0) / 5
+    15,
+    (factorMap.get('automation-level') || 0) / 6.67
   );
   const publicDebtEffect = Math.min(
-    25,
-    (factorMap.get('public-debt') || 0) / 4
+    15,
+    (factorMap.get('public-debt') || 0) / 6.67
   );
 
   // Calculate demographic effects with capped impact
   const oneChildPolicyEffect = Math.min(
-    30,
-    (factorMap.get('one-child-policy') || 0) / 3.33
+    15,
+    (factorMap.get('one-child-policy') || 0) / 6.67
   );
   const immigrationEffect = Math.min(
-    20,
-    (factorMap.get('immigration-rate') || 0) / 5
+    15,
+    (factorMap.get('immigration-rate') || 0) / 6.67
   );
   const childLaborEffect = Math.min(
-    30,
-    (factorMap.get('child-labor') || 0) / 3.33
+    15,
+    (factorMap.get('child-labor') || 0) / 6.67
   );
   const singleParentEffect = Math.min(
-    25,
-    (factorMap.get('single-parent-household') || 0) / 4
+    15,
+    (factorMap.get('single-parent-household') || 0) / 6.67
   );
 
-  // Calculate class prosperity with capped negative contributions
-  const lowerClassProsperity = normalizeValue(
-    (factorMap.get('government-aid') || 0) * 0.4 * corruptionFactor +
-      (factorMap.get('healthcare') || 0) * 0.2 +
-      (factorMap.get('education') || 0) * 0.2 +
-      (factorMap.get('infrastructure') || 0) * 0.15 +
-      (factorMap.get('domestic-manufacturing') || 0) * 0.15 +
-      capNegativeContributions(
-        (factorMap.get('corruption') || 0) * -0.2 +
-          (factorMap.get('closed-society') || 0) * -0.2 +
-          (factorMap.get('environmental-protection') || 0) * 0.2 +
-          (factorMap.get('media-freedom') || 0) * 0.15 +
-          (factorMap.get('gender-equality') || 0) * 0.15 +
-          (factorMap.get('religious-influence') || 0) * 0.15 +
-          (factorMap.get('self-defense-freedom') || 0) * 0.05 +
-          (factorMap.get('tax-rate') || 0) * 0.1 +
-          (factorMap.get('economic-inequality') || 0) * -0.2
-      ) +
-      healthEducationSynergy +
-      infrastructureHealthSynergy +
-      genderEducationSynergy -
-      educationInequalityPenalty -
-      inflationEffect * 0.3 -
-      energyCostEffect * 0.25 -
-      automationEffect * 0.2 -
-      publicDebtEffect * 0.25 -
-      thanosSnapEffect * 0.3 -
-      godzillaEffect * 0.2 -
-      childLaborEffect * 0.3 -
-      singleParentEffect * 0.25 -
-      (factorMap.get('natural-disaster-frequency') || 0) * 0.2 -
-      (factorMap.get('domestic-war-risk') || 0) * 0.25
+  // Calculate total penalties for storm threshold
+  const totalPenalties = calculateTotalPenalties(factorMap);
+
+  // Calculate class prosperity with base resilience and storm threshold
+  const lowerClassProsperity = applyStormThreshold(
+    normalizeValue(
+      50 + // Reduced base resilience from 115 to 50
+        (factorMap.get('government-aid') || 0) * 0.3 * corruptionFactor + // Reduced from 0.4
+        (factorMap.get('healthcare') || 0) * 0.15 + // Reduced from 0.2
+        (factorMap.get('education') || 0) * 0.15 + // Reduced from 0.2
+        (factorMap.get('infrastructure') || 0) * 0.1 + // Reduced from 0.15
+        (factorMap.get('domestic-manufacturing') || 0) * 0.1 + // Reduced from 0.15
+        capNegativeContributions(
+          (factorMap.get('corruption') || 0) * -0.15 +
+            (factorMap.get('closed-society') || 0) * -0.1 +
+            (factorMap.get('environmental-protection') || 0) * 0.15 + // Reduced from 0.2
+            (factorMap.get('media-freedom') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('gender-equality') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('religious-influence') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('self-defense-freedom') || 0) * 0.05 +
+            (factorMap.get('tax-rate') || 0) * 0.05 + // Reduced from 0.1
+            (factorMap.get('economic-inequality') || 0) * -0.15
+        ) +
+        healthEducationSynergy * 0.5 + // Reduced from 1.0
+        infrastructureHealthSynergy * 0.5 + // Reduced from 1.0
+        genderEducationSynergy * 0.5 - // Reduced from 1.0
+        educationInequalityPenalty -
+        inflationEffect * 0.2 - // Reduced from 0.3
+        energyCostEffect * 0.15 - // Reduced from 0.25
+        automationEffect * 0.15 - // Reduced from 0.2
+        publicDebtEffect * 0.15 - // Reduced from 0.25
+        thanosSnapEffect * 0.2 - // Reduced from 0.3
+        godzillaEffect * 0.15 - // Reduced from 0.2
+        childLaborEffect * 0.2 - // Reduced from 0.3
+        singleParentEffect * 0.15 - // Reduced from 0.25
+        (factorMap.get('natural-disaster-frequency') || 0) * 0.15 - // Reduced from 0.2
+        (factorMap.get('domestic-war-risk') || 0) * 0.15 // Reduced from 0.25
+    ),
+    totalPenalties
   );
 
-  const middleClassStability = normalizeValue(
-    capNegativeContributions(
-      (factorMap.get('tax-rate') || 0) * -0.15 +
-        (factorMap.get('economic-inequality') || 0) * -0.15 +
-        (factorMap.get('research-development') || 0) * 0.2 +
-        (factorMap.get('infrastructure') || 0) * 0.15 +
-        (factorMap.get('education') || 0) * 0.15 +
-        (factorMap.get('corruption') || 0) * -0.2 +
-        (factorMap.get('closed-society') || 0) * -0.15 +
-        (factorMap.get('environmental-protection') || 0) * 0.15 +
-        (factorMap.get('media-freedom') || 0) * 0.15 +
-        (factorMap.get('gender-equality') || 0) * 0.15 +
-        (factorMap.get('religious-influence') || 0) * 0.15 +
-        (factorMap.get('self-defense-freedom') || 0) * 0.1
-    ) +
-      healthEducationSynergy +
-      infrastructureHealthSynergy +
-      religiousCohesionSynergy +
-      mediaCohesionSynergy -
-      inflationEffect * 0.25 -
-      energyCostEffect * 0.2 -
-      automationEffect * 0.15 +
-      publicDebtEffect * 0.3 -
-      thanosSnapEffect * 0.3 -
-      godzillaEffect * 0.2 -
-      oneChildPolicyEffect * 0.3 -
-      immigrationEffect * 0.2 -
-      (factorMap.get('natural-disaster-frequency') || 0) * 0.25 -
-      (factorMap.get('domestic-war-risk') || 0) * 0.3
+  const middleClassStability = applyStormThreshold(
+    normalizeValue(
+      40 + // Reduced base resilience from 80 to 40
+        capNegativeContributions(
+          (factorMap.get('tax-rate') || 0) * -0.15 +
+            (factorMap.get('economic-inequality') || 0) * -0.15 +
+            (factorMap.get('research-development') || 0) * 0.15 + // Reduced from 0.2
+            (factorMap.get('infrastructure') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('education') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('corruption') || 0) * -0.15 +
+            (factorMap.get('closed-society') || 0) * -0.1 +
+            (factorMap.get('environmental-protection') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('media-freedom') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('gender-equality') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('religious-influence') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('self-defense-freedom') || 0) * 0.05 // Reduced from 0.1
+        ) +
+        healthEducationSynergy * 0.5 + // Reduced from 1.0
+        infrastructureHealthSynergy * 0.5 + // Reduced from 1.0
+        religiousCohesionSynergy * 0.5 + // Reduced from 1.0
+        mediaCohesionSynergy * 0.5 - // Reduced from 1.0
+        inflationEffect * 0.15 - // Reduced from 0.25
+        energyCostEffect * 0.15 - // Reduced from 0.2
+        automationEffect * 0.1 - // Reduced from 0.15
+        publicDebtEffect * 0.2 - // Reduced from 0.3
+        thanosSnapEffect * 0.2 - // Reduced from 0.3
+        godzillaEffect * 0.15 - // Reduced from 0.2
+        oneChildPolicyEffect * 0.2 - // Reduced from 0.3
+        immigrationEffect * 0.15 - // Reduced from 0.2
+        (factorMap.get('natural-disaster-frequency') || 0) * 0.15 - // Reduced from 0.25
+        (factorMap.get('domestic-war-risk') || 0) * 0.2 // Reduced from 0.3
+    ),
+    totalPenalties
   );
 
-  const upperClassWealth = normalizeValue(
-    (factorMap.get('economic-inequality') || 0) * 0.5 +
-      (factorMap.get('corruption') || 0) * 0.25 +
-      (factorMap.get('research-development') || 0) * 0.25 +
-      (factorMap.get('infrastructure') || 0) * 0.2 +
-      (factorMap.get('domestic-manufacturing') || 0) * 0.25 +
-      (factorMap.get('closed-society') || 0) * 0.2 +
-      capNegativeContributions(
-        (factorMap.get('environmental-protection') || 0) * -0.1 +
-          (factorMap.get('media-freedom') || 0) * -0.1 +
-          (factorMap.get('gender-equality') || 0) * -0.05 +
-          (factorMap.get('religious-influence') || 0) * 0.15 +
-          (factorMap.get('self-defense-freedom') || 0) * 0.25 +
-          (factorMap.get('tax-rate') || 0) * -0.2
-      ) +
-      techResearchSynergy +
-      religiousCohesionSynergy +
-      infrastructureHealthSynergy +
-      inflationEffect * 0.25 +
-      energyCostEffect * 0.15 +
-      automationEffect * 0.25 +
-      publicDebtEffect * 0.2 +
-      thanosSnapEffect * 0.3 -
-      godzillaEffect * 0.2 +
-      childLaborEffect * 0.15 +
-      (factorMap.get('natural-disaster-frequency') || 0) * 0.15 -
-      (factorMap.get('domestic-war-risk') || 0) * 0.2
+  const upperClassWealth = applyStormThreshold(
+    normalizeValue(
+      40 + // Reduced base resilience from 100 to 40
+        (factorMap.get('economic-inequality') || 0) * 0.3 + // Reduced from 0.5
+        (factorMap.get('corruption') || 0) * 0.15 + // Reduced from 0.25
+        (factorMap.get('research-development') || 0) * 0.15 + // Reduced from 0.25
+        (factorMap.get('infrastructure') || 0) * 0.1 + // Reduced from 0.2
+        (factorMap.get('domestic-manufacturing') || 0) * 0.15 + // Reduced from 0.25
+        (factorMap.get('closed-society') || 0) * 0.1 + // Reduced from 0.2
+        capNegativeContributions(
+          (factorMap.get('environmental-protection') || 0) * -0.1 +
+            (factorMap.get('media-freedom') || 0) * -0.1 +
+            (factorMap.get('gender-equality') || 0) * -0.05 +
+            (factorMap.get('religious-influence') || 0) * 0.1 + // Reduced from 0.15
+            (factorMap.get('self-defense-freedom') || 0) * 0.15 + // Reduced from 0.25
+            (factorMap.get('tax-rate') || 0) * -0.15
+        ) +
+        techResearchSynergy * 0.5 + // Reduced from 1.0
+        religiousCohesionSynergy * 0.5 + // Reduced from 1.0
+        infrastructureHealthSynergy * 0.5 + // Reduced from 1.0
+        inflationEffect * 0.15 + // Reduced from 0.25
+        energyCostEffect * 0.1 + // Reduced from 0.15
+        automationEffect * 0.15 + // Reduced from 0.25
+        publicDebtEffect * 0.15 + // Reduced from 0.2
+        thanosSnapEffect * 0.2 - // Reduced from 0.3
+        godzillaEffect * 0.15 - // Reduced from 0.2
+        childLaborEffect * 0.1 + // Reduced from 0.15
+        (factorMap.get('natural-disaster-frequency') || 0) * 0.1 - // Reduced from 0.15
+        (factorMap.get('domestic-war-risk') || 0) * 0.15 // Reduced from 0.2
+    ),
+    totalPenalties
   );
 
   // Calculate inequality penalty with capped impact
   const inequalityPenalty = Math.min(
-    30,
-    graduatedPenalty(factorMap.get('economic-inequality') || 0, 50) * 0.5
+    15, // Reduced from 30
+    graduatedPenalty(factorMap.get('economic-inequality') || 0, 50) * 0.3
   );
 
   // Calculate cohesion bonus with capped impact
   const cohesionBonus = Math.min(
-    30,
+    15, // Reduced from 30
     optimalRange(factorMap.get('social-cohesion') || 0, 30, 70) * 0.3
   );
 
   // Calculate demographic penalty with capped impact
   const demographicPenalty = Math.min(
-    30,
+    15, // Reduced from 30
     graduatedPenalty(oneChildPolicyEffect * 100, 50) * 0.3
   );
 
   // Calculate immigration bonus/penalty with capped impact
   const immigrationBonus = Math.min(
-    20,
-    optimalRange(immigrationEffect * 100, 30, 70) * 0.2
+    15, // Reduced from 20
+    optimalRange(immigrationEffect * 100, 30, 70) * 0.3
   );
 
   // Calculate economic crisis effects with capped impact
   const automationCrisis = Math.min(
-    40,
-    graduatedPenalty(automationEffect * 100, 70) * 0.4
+    15, // Reduced from 40
+    graduatedPenalty(automationEffect * 100, 70) * 0.3
   );
   const energyCrisis = Math.min(
-    50,
-    graduatedPenalty(energyCostEffect * 100, 60) * 0.5
+    15, // Reduced from 50
+    graduatedPenalty(energyCostEffect * 100, 60) * 0.3
   );
 
   // Calculate additional crisis effects with capped impact
   const naturalDisasterCrisis = Math.min(
-    40,
-    graduatedPenalty(factorMap.get('natural-disaster-frequency') || 0, 70) * 0.4
+    15, // Reduced from 40
+    graduatedPenalty(factorMap.get('natural-disaster-frequency') || 0, 70) * 0.3
   );
   const warRiskCrisis = Math.min(
-    50,
-    graduatedPenalty(factorMap.get('domestic-war-risk') || 0, 60) * 0.5
+    15, // Reduced from 50
+    graduatedPenalty(factorMap.get('domestic-war-risk') || 0, 60) * 0.3
   );
   const selfDefenseCrisis = Math.min(
-    30,
+    15, // Reduced from 30
     graduatedPenalty(factorMap.get('self-defense-freedom') || 0, 80) * 0.3
   );
 
   // Calculate final success rate with dynamic scaling and minimum bound
   const scalingFactor = Math.max(
-    0.5,
+    0.75, // Increased from 0.5
     1 -
       (inequalityPenalty +
         automationCrisis +
@@ -307,7 +359,7 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         naturalDisasterCrisis +
         warRiskCrisis +
         selfDefenseCrisis) /
-        100
+        200 // Changed from 100 to 200
   );
 
   const successRate = normalizeValue(
