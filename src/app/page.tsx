@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Progress } from '@/components/ui/progress';
@@ -24,7 +24,7 @@ const PRESET_COLORS = {
   'Socialist State':
     'bg-orange-100 hover:bg-orange-200 text-gray-900 border-orange-300',
   'Great Depression':
-    'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300',
+    'bg-amber-100 hover:bg-amber-200 text-gray-900 border-amber-300',
   'Collapse of Venezuela':
     'bg-red-200 hover:bg-red-300 text-gray-900 border-red-400',
   'French Revolution':
@@ -35,6 +35,30 @@ const PRESET_COLORS = {
     'bg-teal-100 hover:bg-teal-200 text-gray-900 border-teal-300',
   'Post-WWII Boom':
     'bg-emerald-100 hover:bg-emerald-200 text-gray-900 border-emerald-300',
+  'Anarchic Society':
+    'bg-red-100 hover:bg-red-200 text-gray-900 border-red-300',
+  'Viking Society':
+    'bg-teal-100 hover:bg-teal-200 text-gray-900 border-teal-300',
+  'Barter Society':
+    'bg-blue-100 hover:bg-blue-200 text-gray-900 border-blue-300',
+  'Feudal Society':
+    'bg-green-100 hover:bg-green-200 text-gray-900 border-green-300',
+  'Technocratic Society':
+    'bg-yellow-100 hover:bg-yellow-200 text-gray-900 border-yellow-300',
+  'Nomadic Society':
+    'bg-pink-100 hover:bg-pink-200 text-gray-900 border-pink-300',
+  'Roman Empire Fall':
+    'bg-red-100 hover:bg-red-200 text-gray-900 border-red-300',
+  'Ming Dynasty Collapse':
+    'bg-teal-100 hover:bg-teal-200 text-gray-900 border-teal-300',
+  'Pre-Revolutionary Iran':
+    'bg-red-100 hover:bg-red-200 text-gray-900 border-red-300',
+  'Weimar Republic':
+    'bg-teal-100 hover:bg-teal-200 text-gray-900 border-teal-300',
+  'Pre-Civil War America':
+    'bg-blue-100 hover:bg-blue-200 text-gray-900 border-blue-300',
+  'Pre-Communist China':
+    'bg-green-100 hover:bg-green-200 text-gray-900 border-green-300',
 };
 
 const getStatusColor = (state: string) => {
@@ -96,6 +120,12 @@ const getStatusColor = (state: string) => {
     // Closed Society States - Indigo spectrum
     'Isolated Society': 'bg-indigo-800 border-indigo-900',
     'Restricted Society': 'bg-indigo-700 border-indigo-800',
+
+    // Economic Crisis States - Red spectrum
+    'Hyperinflation Crisis': 'bg-red-800 border-red-900',
+    'Energy Crisis': 'bg-red-700 border-red-800',
+    'Automation Divide': 'bg-red-600 border-red-700',
+    'Debt Collapse': 'bg-red-900 border-red-950',
   };
 
   return stateColors[state] || stateColors['Stable Society'];
@@ -112,9 +142,38 @@ const generateRandomVariation = (
 
 export default function Home() {
   const [factors, setFactors] = useState<SocietalFactor[]>(DEFAULT_FACTORS);
-  const [simulationState, setSimulationState] = useState(() =>
-    calculateOutcomes(factors)
+  const [simulationState, setSimulationState] = useState(
+    calculateOutcomes(DEFAULT_FACTORS)
   );
+
+  // Initialize random values on client side
+  useEffect(() => {
+    const initializeFactors = () => {
+      const updatedFactors = factors.map((factor) => {
+        // Skip fantasy factors
+        if (
+          [
+            'mana-storm-intensity',
+            'thanos-snap-probability',
+            'godzilla-rampage',
+            'joker-chaos-index',
+          ].includes(factor.id)
+        ) {
+          return factor;
+        }
+        // Set random value between 0-20 for non-fantasy factors
+        return {
+          ...factor,
+          value: Math.floor(Math.random() * 21),
+        };
+      });
+
+      setFactors(updatedFactors);
+      setSimulationState(calculateOutcomes(updatedFactors));
+    };
+
+    initializeFactors();
+  }, []); // Empty dependency array means this runs once on mount
 
   const handleFactorChange = (id: string, value: number) => {
     const newFactors = factors.map((factor) =>

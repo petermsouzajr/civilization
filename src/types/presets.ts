@@ -5,12 +5,796 @@ export interface Preset {
   description: string;
   factors: SocietalFactor[];
   historicalOutcome?: string;
+  color: string;
 }
 
 export const PRESETS: Preset[] = [
   {
+    name: 'Anarchic Society',
+    description:
+      'A society with minimal government control, emphasizing individual freedom and self-governance.',
+    factors: [
+      {
+        id: 'government-aid',
+        value: 10,
+        name: 'Government Aid',
+        description: 'Level of government assistance to citizens',
+      },
+      {
+        id: 'tax-rate',
+        value: 5,
+        name: 'Tax Rate',
+        description: 'Percentage of income collected as taxes',
+      },
+      {
+        id: 'corruption',
+        value: 80,
+        name: 'Corruption',
+        description: 'Level of corruption in government and institutions',
+      },
+      {
+        id: 'self-defense-freedom',
+        value: 90,
+        name: 'Self-Defense Freedom',
+        description: 'Freedom to defend oneself and property',
+      },
+      {
+        id: 'media-freedom',
+        value: 90,
+        name: 'Media Freedom',
+        description: 'Freedom of press and expression',
+      },
+      {
+        id: 'social-cohesion',
+        value: 20,
+        name: 'Social Cohesion',
+        description: 'Level of social unity and trust',
+      },
+    ],
+    color: '#FF6B6B',
+  },
+  {
+    name: 'Viking Society',
+    description:
+      'A warrior culture focused on raiding, trading, and strong community bonds.',
+    factors: [
+      {
+        id: 'domestic-manufacturing',
+        value: 70,
+        name: 'Domestic Manufacturing',
+        description: 'Level of local production and industry',
+      },
+      {
+        id: 'self-defense-freedom',
+        value: 80,
+        name: 'Self-Defense Freedom',
+        description: 'Freedom to defend oneself and property',
+      },
+      {
+        id: 'social-cohesion',
+        value: 70,
+        name: 'Social Cohesion',
+        description: 'Level of social unity and trust',
+      },
+      {
+        id: 'education',
+        value: 30,
+        name: 'Education',
+        description: 'Access to and quality of education',
+      },
+      {
+        id: 'government-aid',
+        value: 20,
+        name: 'Government Aid',
+        description: 'Level of government assistance to citizens',
+      },
+      {
+        id: 'religious-influence',
+        value: 60,
+        name: 'Religious Influence',
+        description: 'Influence of religion on society',
+      },
+    ],
+    color: '#4ECDC4',
+  },
+  {
+    name: 'Barter Society',
+    description:
+      'A society based on direct exchange of goods and services, with minimal monetary systems.',
+    factors: [
+      {
+        id: 'tax-rate',
+        value: 0,
+        name: 'Tax Rate',
+        description: 'Percentage of income collected as taxes',
+      },
+      {
+        id: 'domestic-manufacturing',
+        value: 60,
+        name: 'Domestic Manufacturing',
+        description: 'Level of local production and industry',
+      },
+      {
+        id: 'economic-inequality',
+        value: 30,
+        name: 'Economic Inequality',
+        description: 'Gap between rich and poor',
+      },
+      {
+        id: 'research-development',
+        value: 20,
+        name: 'Research & Development',
+        description: 'Investment in scientific advancement',
+      },
+      {
+        id: 'infrastructure',
+        value: 40,
+        name: 'Infrastructure',
+        description: 'Quality of public infrastructure',
+      },
+      {
+        id: 'closed-society',
+        value: 60,
+        name: 'Closed Society',
+        description: 'Level of isolation from external influences',
+      },
+    ],
+    color: '#45B7D1',
+  },
+  {
+    name: 'Feudal Society',
+    description:
+      'A hierarchical society with strong class divisions and religious influence.',
+    factors: [
+      {
+        id: 'economic-inequality',
+        value: 80,
+        name: 'Economic Inequality',
+        description: 'Gap between rich and poor',
+      },
+      {
+        id: 'education',
+        value: 20,
+        name: 'Education',
+        description: 'Access to and quality of education',
+      },
+      {
+        id: 'religious-influence',
+        value: 70,
+        name: 'Religious Influence',
+        description: 'Influence of religion on society',
+      },
+      {
+        id: 'social-cohesion',
+        value: 40,
+        name: 'Social Cohesion',
+        description: 'Level of social unity and trust',
+      },
+      {
+        id: 'infrastructure',
+        value: 30,
+        name: 'Infrastructure',
+        description: 'Quality of public infrastructure',
+      },
+      {
+        id: 'government-aid',
+        value: 10,
+        name: 'Government Aid',
+        description: 'Level of government assistance to citizens',
+      },
+    ],
+    color: '#96CEB4',
+  },
+  {
+    name: 'Technocratic Society',
+    description:
+      'A society ruled by scientific principles and technological advancement.',
+    factors: [
+      {
+        id: 'research-development',
+        value: 90,
+        name: 'Research & Development',
+        description: 'Investment in scientific advancement',
+      },
+      {
+        id: 'technological-adoption',
+        value: 80,
+        name: 'Technological Adoption',
+        description: 'Rate of new technology implementation',
+      },
+      {
+        id: 'media-freedom',
+        value: 30,
+        name: 'Media Freedom',
+        description: 'Freedom of press and expression',
+      },
+      {
+        id: 'education',
+        value: 85,
+        name: 'Education',
+        description: 'Access to and quality of education',
+      },
+      {
+        id: 'infrastructure',
+        value: 75,
+        name: 'Infrastructure',
+        description: 'Quality of public infrastructure',
+      },
+      {
+        id: 'social-cohesion',
+        value: 40,
+        name: 'Social Cohesion',
+        description: 'Level of social unity and trust',
+      },
+    ],
+    color: '#FFEEAD',
+  },
+  {
+    name: 'Nomadic Society',
+    description:
+      'A mobile society with strong communal bonds and minimal permanent infrastructure.',
+    factors: [
+      {
+        id: 'infrastructure',
+        value: 20,
+        name: 'Infrastructure',
+        description: 'Quality of public infrastructure',
+      },
+      {
+        id: 'self-defense-freedom',
+        value: 70,
+        name: 'Self-Defense Freedom',
+        description: 'Freedom to defend oneself and property',
+      },
+      {
+        id: 'tax-rate',
+        value: 10,
+        name: 'Tax Rate',
+        description: 'Percentage of income collected as taxes',
+      },
+      {
+        id: 'domestic-manufacturing',
+        value: 40,
+        name: 'Domestic Manufacturing',
+        description: 'Level of local production and industry',
+      },
+      {
+        id: 'social-cohesion',
+        value: 60,
+        name: 'Social Cohesion',
+        description: 'Level of social unity and trust',
+      },
+      {
+        id: 'government-aid',
+        value: 15,
+        name: 'Government Aid',
+        description: 'Level of government assistance to citizens',
+      },
+    ],
+    color: '#D4A5A5',
+  },
+  {
+    name: 'Pre-Revolutionary Iran',
+    description:
+      'Iran, 1970s: Modernization and growing social tensions before Islamic Revolution',
+    historicalOutcome:
+      'Rapid modernization under the Shah leads to cultural backlash and religious revival. Economic inequality and political repression fuel the Islamic Revolution.',
+    factors: [
+      {
+        id: 'domestic-manufacturing',
+        value: 60,
+        name: 'Domestic Manufacturing',
+        description: 'Growing industrial base',
+      },
+      {
+        id: 'government-aid',
+        value: 40,
+        name: 'Government Aid',
+        description: 'Limited social programs',
+      },
+      {
+        id: 'healthcare',
+        value: 50,
+        name: 'Healthcare',
+        description: 'Improving but uneven access',
+      },
+      {
+        id: 'education',
+        value: 70,
+        name: 'Education',
+        description: 'Expanding but westernized',
+      },
+      {
+        id: 'infrastructure',
+        value: 70,
+        name: 'Infrastructure',
+        description: 'Modern development projects',
+      },
+      {
+        id: 'environmental-protection',
+        value: 30,
+        name: 'Environmental Protection',
+        description: 'Limited environmental concerns',
+      },
+      {
+        id: 'tax-rate',
+        value: 50,
+        name: 'Tax Rate',
+        description: 'Moderate taxation',
+      },
+      {
+        id: 'media-freedom',
+        value: 30,
+        name: 'Media Freedom',
+        description: 'Heavy censorship',
+      },
+      {
+        id: 'self-defense',
+        value: 60,
+        name: 'Self-Defense',
+        description: 'Growing political violence',
+      },
+      {
+        id: 'research-development',
+        value: 50,
+        name: 'Research & Development',
+        description: 'Scientific advancement',
+      },
+      {
+        id: 'corruption',
+        value: 70,
+        name: 'Political Corruption',
+        description: 'Widespread corruption',
+      },
+      {
+        id: 'social-cohesion',
+        value: 30,
+        name: 'Social Cohesion',
+        description: 'Deep cultural divides',
+      },
+      {
+        id: 'economic-inequality',
+        value: 70,
+        name: 'Economic Inequality',
+        description: 'Growing wealth gaps',
+      },
+      {
+        id: 'gender-equality',
+        value: 40,
+        name: 'Gender Equality',
+        description: 'Modernization vs tradition',
+      },
+      {
+        id: 'child-labor',
+        value: 20,
+        name: 'Child Labor',
+        description: 'Declining but still present',
+      },
+      {
+        id: 'religious-influence',
+        value: 80,
+        name: 'Religious Influence',
+        description: 'Strong religious opposition',
+      },
+      {
+        id: 'technological-adoption',
+        value: 60,
+        name: 'Technological Adoption',
+        description: 'Rapid modernization',
+      },
+      {
+        id: 'immigration-rate',
+        value: 40,
+        name: 'Immigration Rate',
+        description: 'Urban migration',
+      },
+      {
+        id: 'natural-disaster-frequency',
+        value: 30,
+        name: 'Natural Disaster Frequency',
+        description: 'Moderate risk',
+      },
+      {
+        id: 'domestic-war-risk',
+        value: 70,
+        name: 'Domestic War Risk',
+        description: 'High risk of revolution',
+      },
+    ],
+    color: '#FF6B6B',
+  },
+  {
+    name: 'Weimar Republic',
+    description:
+      'Germany, 1920s-1930s: Economic crisis and political extremism before Nazi rise',
+    historicalOutcome:
+      'Economic collapse, political polarization, and social unrest create conditions for authoritarian takeover. The democratic Weimar Republic gives way to Nazi dictatorship.',
+    factors: [
+      {
+        id: 'domestic-manufacturing',
+        value: 40,
+        name: 'Domestic Manufacturing',
+        description: 'Post-war recovery',
+      },
+      {
+        id: 'government-aid',
+        value: 30,
+        name: 'Government Aid',
+        description: 'Limited welfare state',
+      },
+      {
+        id: 'healthcare',
+        value: 40,
+        name: 'Healthcare',
+        description: 'Basic public health',
+      },
+      {
+        id: 'education',
+        value: 60,
+        name: 'Education',
+        description: 'Quality education system',
+      },
+      {
+        id: 'infrastructure',
+        value: 50,
+        name: 'Infrastructure',
+        description: 'Post-war rebuilding',
+      },
+      {
+        id: 'environmental-protection',
+        value: 20,
+        name: 'Environmental Protection',
+        description: 'Limited concern',
+      },
+      {
+        id: 'tax-rate',
+        value: 60,
+        name: 'Tax Rate',
+        description: 'High wartime debt',
+      },
+      {
+        id: 'media-freedom',
+        value: 70,
+        name: 'Media Freedom',
+        description: 'Free but polarized press',
+      },
+      {
+        id: 'self-defense',
+        value: 80,
+        name: 'Self-Defense',
+        description: 'Paramilitary groups',
+      },
+      {
+        id: 'research-development',
+        value: 50,
+        name: 'Research & Development',
+        description: 'Scientific advancement',
+      },
+      {
+        id: 'corruption',
+        value: 60,
+        name: 'Political Corruption',
+        description: 'Widespread corruption',
+      },
+      {
+        id: 'social-cohesion',
+        value: 20,
+        name: 'Social Cohesion',
+        description: 'Deep political divides',
+      },
+      {
+        id: 'economic-inequality',
+        value: 70,
+        name: 'Economic Inequality',
+        description: 'Growing wealth gaps',
+      },
+      {
+        id: 'gender-equality',
+        value: 50,
+        name: 'Gender Equality',
+        description: 'Women in workforce',
+      },
+      {
+        id: 'child-labor',
+        value: 30,
+        name: 'Child Labor',
+        description: 'Economic necessity',
+      },
+      {
+        id: 'religious-influence',
+        value: 40,
+        name: 'Religious Influence',
+        description: 'Declining influence',
+      },
+      {
+        id: 'technological-adoption',
+        value: 60,
+        name: 'Technological Adoption',
+        description: 'Industrial development',
+      },
+      {
+        id: 'immigration-rate',
+        value: 20,
+        name: 'Immigration Rate',
+        description: 'Limited immigration',
+      },
+      {
+        id: 'natural-disaster-frequency',
+        value: 20,
+        name: 'Natural Disaster Frequency',
+        description: 'Low risk',
+      },
+      {
+        id: 'domestic-war-risk',
+        value: 80,
+        name: 'Domestic War Risk',
+        description: 'High risk of civil war',
+      },
+    ],
+    color: '#4ECDC4',
+  },
+  {
+    name: 'Pre-Civil War America',
+    description: 'USA, 1850s: Sectional tensions and slavery before Civil War',
+    historicalOutcome:
+      'Deepening divide over slavery, economic differences between North and South, and political polarization lead to the deadliest conflict in American history.',
+    factors: [
+      {
+        id: 'domestic-manufacturing',
+        value: 70,
+        name: 'Domestic Manufacturing',
+        description: 'Industrial North',
+      },
+      {
+        id: 'government-aid',
+        value: 20,
+        name: 'Government Aid',
+        description: 'Limited federal role',
+      },
+      {
+        id: 'healthcare',
+        value: 30,
+        name: 'Healthcare',
+        description: 'Basic medical care',
+      },
+      {
+        id: 'education',
+        value: 40,
+        name: 'Education',
+        description: 'Uneven access',
+      },
+      {
+        id: 'infrastructure',
+        value: 60,
+        name: 'Infrastructure',
+        description: 'Railroad expansion',
+      },
+      {
+        id: 'environmental-protection',
+        value: 10,
+        name: 'Environmental Protection',
+        description: 'No concern',
+      },
+      {
+        id: 'tax-rate',
+        value: 30,
+        name: 'Tax Rate',
+        description: 'Low federal taxes',
+      },
+      {
+        id: 'media-freedom',
+        value: 80,
+        name: 'Media Freedom',
+        description: 'Free but partisan press',
+      },
+      {
+        id: 'self-defense',
+        value: 70,
+        name: 'Self-Defense',
+        description: 'Armed militias',
+      },
+      {
+        id: 'research-development',
+        value: 40,
+        name: 'Research & Development',
+        description: 'Limited innovation',
+      },
+      {
+        id: 'corruption',
+        value: 50,
+        name: 'Political Corruption',
+        description: 'Sectional politics',
+      },
+      {
+        id: 'social-cohesion',
+        value: 20,
+        name: 'Social Cohesion',
+        description: 'Deep sectional divide',
+      },
+      {
+        id: 'economic-inequality',
+        value: 80,
+        name: 'Economic Inequality',
+        description: 'Slavery and class divide',
+      },
+      {
+        id: 'gender-equality',
+        value: 20,
+        name: 'Gender Equality',
+        description: 'Limited rights',
+      },
+      {
+        id: 'child-labor',
+        value: 40,
+        name: 'Child Labor',
+        description: 'Common in industry',
+      },
+      {
+        id: 'religious-influence',
+        value: 70,
+        name: 'Religious Influence',
+        description: 'Strong religious divide',
+      },
+      {
+        id: 'technological-adoption',
+        value: 50,
+        name: 'Technological Adoption',
+        description: 'Industrial revolution',
+      },
+      {
+        id: 'immigration-rate',
+        value: 60,
+        name: 'Immigration Rate',
+        description: 'High European immigration',
+      },
+      {
+        id: 'natural-disaster-frequency',
+        value: 30,
+        name: 'Natural Disaster Frequency',
+        description: 'Moderate risk',
+      },
+      {
+        id: 'domestic-war-risk',
+        value: 90,
+        name: 'Domestic War Risk',
+        description: 'Imminent civil war',
+      },
+    ],
+    color: '#45B7D1',
+  },
+  {
+    name: 'Pre-Communist China',
+    description:
+      'China, 1940s: Civil war and social upheaval before Communist victory',
+    historicalOutcome:
+      'Decades of war, economic collapse, and social chaos create conditions for Communist revolution. The Nationalist government loses popular support and flees to Taiwan.',
+    factors: [
+      {
+        id: 'domestic-manufacturing',
+        value: 30,
+        name: 'Domestic Manufacturing',
+        description: 'War-torn industry',
+      },
+      {
+        id: 'government-aid',
+        value: 20,
+        name: 'Government Aid',
+        description: 'Limited state capacity',
+      },
+      {
+        id: 'healthcare',
+        value: 20,
+        name: 'Healthcare',
+        description: 'Poor public health',
+      },
+      {
+        id: 'education',
+        value: 30,
+        name: 'Education',
+        description: 'Limited access',
+      },
+      {
+        id: 'infrastructure',
+        value: 20,
+        name: 'Infrastructure',
+        description: 'War damage',
+      },
+      {
+        id: 'environmental-protection',
+        value: 10,
+        name: 'Environmental Protection',
+        description: 'No concern',
+      },
+      {
+        id: 'tax-rate',
+        value: 70,
+        name: 'Tax Rate',
+        description: 'High wartime taxes',
+      },
+      {
+        id: 'media-freedom',
+        value: 30,
+        name: 'Media Freedom',
+        description: 'War censorship',
+      },
+      {
+        id: 'self-defense',
+        value: 90,
+        name: 'Self-Defense',
+        description: 'Armed conflict',
+      },
+      {
+        id: 'research-development',
+        value: 20,
+        name: 'Research & Development',
+        description: 'Limited during war',
+      },
+      {
+        id: 'corruption',
+        value: 80,
+        name: 'Political Corruption',
+        description: 'Widespread corruption',
+      },
+      {
+        id: 'social-cohesion',
+        value: 10,
+        name: 'Social Cohesion',
+        description: 'Civil war',
+      },
+      {
+        id: 'economic-inequality',
+        value: 80,
+        name: 'Economic Inequality',
+        description: 'Extreme poverty',
+      },
+      {
+        id: 'gender-equality',
+        value: 20,
+        name: 'Gender Equality',
+        description: 'Traditional society',
+      },
+      {
+        id: 'child-labor',
+        value: 50,
+        name: 'Child Labor',
+        description: 'Economic necessity',
+      },
+      {
+        id: 'religious-influence',
+        value: 40,
+        name: 'Religious Influence',
+        description: 'Mixed influence',
+      },
+      {
+        id: 'technological-adoption',
+        value: 30,
+        name: 'Technological Adoption',
+        description: 'Limited during war',
+      },
+      {
+        id: 'immigration-rate',
+        value: 20,
+        name: 'Immigration Rate',
+        description: 'Internal displacement',
+      },
+      {
+        id: 'natural-disaster-frequency',
+        value: 40,
+        name: 'Natural Disaster Frequency',
+        description: 'War and famine',
+      },
+      {
+        id: 'domestic-war-risk',
+        value: 90,
+        name: 'Domestic War Risk',
+        description: 'Active civil war',
+      },
+    ],
+    color: '#96CEB4',
+  },
+  {
     name: 'Balanced Society',
-    description: 'A balanced society with moderate values across all factors',
+    description: 'A society with moderate values across all factors',
     factors: [
       {
         id: 'domestic-manufacturing',
@@ -103,11 +887,11 @@ export const PRESETS: Preset[] = [
         description: 'Risk of internal conflict and civil war',
       },
     ],
+    color: '#FF6B6B',
   },
   {
     name: 'Lower Class Focus',
-    description:
-      'A society focused on supporting the lower class through government aid and services',
+    description: 'A society prioritizing the welfare of the lower class',
     factors: [
       {
         id: 'domestic-manufacturing',
@@ -200,11 +984,11 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#4ECDC4',
   },
   {
     name: 'Middle Class Focus',
-    description:
-      'A society emphasizing middle class stability through education and infrastructure',
+    description: 'A society emphasizing middle class stability',
     factors: [
       {
         id: 'domestic-manufacturing',
@@ -297,11 +1081,11 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#45B7D1',
   },
   {
     name: 'Upper Class Focus',
-    description:
-      'A society prioritizing upper class wealth through business-friendly policies',
+    description: 'A society prioritizing upper class interests',
     factors: [
       {
         id: 'domestic-manufacturing',
@@ -394,11 +1178,11 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#FFEEAD',
   },
   {
     name: 'Militant Society',
-    description:
-      'A society with high military spending and self-defense capabilities',
+    description: 'A society with strong military and defense focus',
     factors: [
       {
         id: 'domestic-manufacturing',
@@ -491,11 +1275,11 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#FF6B6B',
   },
   {
     name: 'Socialist State',
-    description:
-      'A society with high government control and wealth redistribution',
+    description: 'A society with strong government control and welfare',
     factors: [
       {
         id: 'domestic-manufacturing',
@@ -588,6 +1372,7 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#D4A5A5',
   },
   {
     name: 'Great Depression',
@@ -735,6 +1520,7 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#FF6B6B',
   },
   {
     name: 'Collapse of Venezuela',
@@ -882,6 +1668,7 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#4ECDC4',
   },
   {
     name: 'French Revolution',
@@ -1028,6 +1815,7 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#45B7D1',
   },
   {
     name: 'Industrial Revolution',
@@ -1175,6 +1963,7 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#FF6B6B',
   },
   {
     name: 'Fall of Soviet Union',
@@ -1321,6 +2110,7 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#FFEEAD',
   },
   {
     name: 'Post-WWII Boom',
@@ -1467,6 +2257,301 @@ export const PRESETS: Preset[] = [
         description: 'Likelihood of giant monster attacks',
       },
     ],
+    color: '#D4A5A5',
+  },
+  {
+    name: 'Roman Empire Fall',
+    description: '3rd-5th centuries CE: Imperial decline and collapse',
+    historicalOutcome:
+      "Economic instability, barbarian invasions, and internal decay lead to the empire's fragmentation. Infrastructure crumbles, trade declines, and urban centers shrink.",
+    factors: [
+      {
+        id: 'domestic-manufacturing',
+        value: 30,
+        name: 'Domestic Manufacturing',
+        description: 'Declining industrial output and trade',
+      },
+      {
+        id: 'government-aid',
+        value: 20,
+        name: 'Government Aid',
+        description: 'Weakening state support systems',
+      },
+      {
+        id: 'healthcare',
+        value: 15,
+        name: 'Healthcare',
+        description: 'Deteriorating public health',
+      },
+      {
+        id: 'education',
+        value: 25,
+        name: 'Education',
+        description: 'Declining literacy and learning',
+      },
+      {
+        id: 'infrastructure',
+        value: 20,
+        name: 'Infrastructure',
+        description: 'Crumbling roads and buildings',
+      },
+      {
+        id: 'environmental-protection',
+        value: 5,
+        name: 'Environmental Protection',
+        description: 'No focus on environment',
+      },
+      {
+        id: 'tax-rate',
+        value: 70,
+        name: 'Tax Rate',
+        description: 'High taxes to fund military',
+      },
+      {
+        id: 'media-freedom',
+        value: 20,
+        name: 'Media Freedom',
+        description: 'State-controlled information',
+      },
+      {
+        id: 'self-defense',
+        value: 80,
+        name: 'Self-Defense',
+        description: 'High military spending',
+      },
+      {
+        id: 'research-development',
+        value: 10,
+        name: 'Research & Development',
+        description: 'Limited innovation',
+      },
+      {
+        id: 'corruption',
+        value: 80,
+        name: 'Political Corruption',
+        description: 'Widespread corruption',
+      },
+      {
+        id: 'social-cohesion',
+        value: 20,
+        name: 'Social Cohesion',
+        description: 'Deep social divides',
+      },
+      {
+        id: 'economic-inequality',
+        value: 90,
+        name: 'Economic Inequality',
+        description: 'Extreme wealth gaps',
+      },
+      {
+        id: 'gender-equality',
+        value: 10,
+        name: 'Gender Equality',
+        description: 'Strong gender inequality',
+      },
+      {
+        id: 'child-labor',
+        value: 40,
+        name: 'Child Labor',
+        description: 'Common in agriculture',
+      },
+      {
+        id: 'religious-influence',
+        value: 70,
+        name: 'Religious Influence',
+        description: 'Rising Christian influence',
+      },
+      {
+        id: 'technological-adoption',
+        value: 20,
+        name: 'Technological Adoption',
+        description: 'Limited technological progress',
+      },
+      {
+        id: 'immigration-rate',
+        value: 60,
+        name: 'Immigration Rate',
+        description: 'Barbarian migrations',
+      },
+      {
+        id: 'natural-disaster-frequency',
+        value: 40,
+        name: 'Natural Disaster Frequency',
+        description: 'Climate changes and plagues',
+      },
+      {
+        id: 'domestic-war-risk',
+        value: 90,
+        name: 'Domestic War Risk',
+        description: 'Constant civil wars',
+      },
+      {
+        id: 'mana-storm-intensity',
+        value: 10,
+        name: 'Mana Storm Intensity',
+        description: 'Intensity of magical energy disturbances',
+      },
+      {
+        id: 'thanos-snap-probability',
+        value: 5,
+        name: 'Thanos Snap Probability',
+        description: 'Probability of half the population disappearing',
+      },
+      {
+        id: 'godzilla-rampage',
+        value: 5,
+        name: 'Godzilla Rampage',
+        description: 'Likelihood of giant monster attacks',
+      },
+    ],
+    color: '#FF6B6B',
+  },
+  {
+    name: 'Ming Dynasty Collapse',
+    description: 'China, 17th century: Imperial decline and peasant rebellion',
+    historicalOutcome:
+      "Economic crisis, peasant uprisings, and Manchu invasion lead to the dynasty's fall. Climate change and population pressure exacerbate social tensions.",
+    factors: [
+      {
+        id: 'domestic-manufacturing',
+        value: 40,
+        name: 'Domestic Manufacturing',
+        description: 'Declining production',
+      },
+      {
+        id: 'government-aid',
+        value: 20,
+        name: 'Government Aid',
+        description: 'Weak state support',
+      },
+      {
+        id: 'healthcare',
+        value: 15,
+        name: 'Healthcare',
+        description: 'Poor public health',
+      },
+      {
+        id: 'education',
+        value: 30,
+        name: 'Education',
+        description: 'Limited access',
+      },
+      {
+        id: 'infrastructure',
+        value: 25,
+        name: 'Infrastructure',
+        description: 'Deteriorating public works',
+      },
+      {
+        id: 'environmental-protection',
+        value: 5,
+        name: 'Environmental Protection',
+        description: 'No focus on environment',
+      },
+      {
+        id: 'tax-rate',
+        value: 80,
+        name: 'Tax Rate',
+        description: 'Heavy taxation',
+      },
+      {
+        id: 'media-freedom',
+        value: 10,
+        name: 'Media Freedom',
+        description: 'Strict censorship',
+      },
+      {
+        id: 'self-defense',
+        value: 70,
+        name: 'Self-Defense',
+        description: 'Military spending',
+      },
+      {
+        id: 'research-development',
+        value: 15,
+        name: 'Research & Development',
+        description: 'Limited innovation',
+      },
+      {
+        id: 'corruption',
+        value: 90,
+        name: 'Political Corruption',
+        description: 'Rampant corruption',
+      },
+      {
+        id: 'social-cohesion',
+        value: 10,
+        name: 'Social Cohesion',
+        description: 'Severe social unrest',
+      },
+      {
+        id: 'economic-inequality',
+        value: 90,
+        name: 'Economic Inequality',
+        description: 'Extreme wealth gaps',
+      },
+      {
+        id: 'gender-equality',
+        value: 10,
+        name: 'Gender Equality',
+        description: 'Strong gender inequality',
+      },
+      {
+        id: 'child-labor',
+        value: 50,
+        name: 'Child Labor',
+        description: 'Economic necessity',
+      },
+      {
+        id: 'religious-influence',
+        value: 60,
+        name: 'Religious Influence',
+        description: 'Strong religious influence',
+      },
+      {
+        id: 'technological-adoption',
+        value: 20,
+        name: 'Technological Adoption',
+        description: 'Limited technological progress',
+      },
+      {
+        id: 'immigration-rate',
+        value: 30,
+        name: 'Immigration Rate',
+        description: 'Manchu invasion',
+      },
+      {
+        id: 'natural-disaster-frequency',
+        value: 70,
+        name: 'Natural Disaster Frequency',
+        description: 'Severe climate changes',
+      },
+      {
+        id: 'domestic-war-risk',
+        value: 90,
+        name: 'Domestic War Risk',
+        description: 'Peasant rebellions',
+      },
+      {
+        id: 'mana-storm-intensity',
+        value: 10,
+        name: 'Mana Storm Intensity',
+        description: 'Intensity of magical energy disturbances',
+      },
+      {
+        id: 'thanos-snap-probability',
+        value: 5,
+        name: 'Thanos Snap Probability',
+        description: 'Probability of half the population disappearing',
+      },
+      {
+        id: 'godzilla-rampage',
+        value: 5,
+        name: 'Godzilla Rampage',
+        description: 'Likelihood of giant monster attacks',
+      },
+    ],
+    color: '#4ECDC4',
   },
 ];
 
@@ -1616,4 +2701,23 @@ export const PRESET_COLORS = {
   'Post-WWII Boom': '#45B7D1',
   'Collapse of Venezuela': '#96CEB4',
   'Fall of the Soviet Union': '#FFEEAD',
+  'Anarchic Society': '#FF6B6B',
+  'Viking Society': '#4ECDC4',
+  'Barter Society': '#45B7D1',
+  'Feudal Society': '#96CEB4',
+  'Technocratic Society': '#FFEEAD',
+  'Nomadic Society': '#D4A5A5',
+  'Balanced Society': '#FF6B6B',
+  'Lower Class Focus': '#4ECDC4',
+  'Middle Class Focus': '#45B7D1',
+  'Upper Class Focus': '#FFEEAD',
+  'Militant Society': '#FF6B6B',
+  'Socialist State': '#D4A5A5',
+  'Great Depression': '#8B4513', // Changed to a brown color to represent economic hardship
+  'Roman Empire Fall': '#FF6B6B',
+  'Ming Dynasty Collapse': '#4ECDC4',
+  'Pre-Revolutionary Iran': '#FF6B6B',
+  'Weimar Republic': '#4ECDC4',
+  'Pre-Civil War America': '#45B7D1',
+  'Pre-Communist China': '#96CEB4',
 };

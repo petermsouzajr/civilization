@@ -5,18 +5,18 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Civilization Simulation',
-  description: 'A simulation game exploring societal factors and their impacts',
+  title: 'Civilization Simulator',
+  description: 'Simulate and explore different societal configurations',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} vsc-initialized`}>{children}</body>
     </html>
   );
 }
