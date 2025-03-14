@@ -177,19 +177,19 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
   {
     id: 'mana-storm-intensity',
     name: 'Mana Storm Intensity',
-    value: 10,
+    value: 0,
     description: 'Intensity of magical energy disturbances',
   },
   {
     id: 'thanos-snap-probability',
     name: 'Thanos Snap Probability',
-    value: 5,
+    value: 0,
     description: 'Probability of half the population disappearing',
   },
   {
     id: 'godzilla-rampage',
     name: 'Godzilla Rampage',
-    value: 5,
+    value: 0,
     description: 'Likelihood of giant monster attacks',
   },
 ];

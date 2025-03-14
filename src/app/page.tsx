@@ -130,20 +130,33 @@ export default function Home() {
 
     // Create new factors array with all default factors
     const newFactors = DEFAULT_FACTORS.map((defaultFactor) => {
-      // If the factor exists in the preset, use its value
-      if (presetMap.has(defaultFactor.id)) {
+      // If the factor exists in the preset and is not a fantasy factor, use its value
+      if (
+        presetMap.has(defaultFactor.id) &&
+        !isFantasyFactor(defaultFactor.id)
+      ) {
         const presetFactor = presetMap.get(defaultFactor.id)!;
         return {
           ...defaultFactor,
           value: generateRandomVariation(presetFactor.value),
         };
       }
-      // If not in preset, keep the default value
+      // If it's a fantasy factor or not in preset, keep the current value
       return defaultFactor;
     });
 
     setFactors(newFactors);
     setSimulationState(calculateOutcomes(newFactors));
+  };
+
+  // Helper function to identify fantasy factors
+  const isFantasyFactor = (id: string): boolean => {
+    return [
+      'mana-storm-intensity',
+      'thanos-snap-probability',
+      'godzilla-rampage',
+      'joker-chaos-index',
+    ].includes(id);
   };
 
   return (
