@@ -291,8 +291,8 @@ export default function Home() {
                 />
               </div>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
+              <div className="space-y-2">
+                <div className=" outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
                   <div className="flex justify-between">
                     <span className="text-lg text-gray-900 dark:text-gray-100">
                       Lower Class Prosperity
@@ -306,7 +306,7 @@ export default function Home() {
                     className="h-2 bg-gray-200 dark:bg-gray-700"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className=" outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
                   <div className="flex justify-between">
                     <span className="text-lg text-gray-900 dark:text-gray-100">
                       Middle Class Stability
@@ -320,7 +320,7 @@ export default function Home() {
                     className="h-2 bg-gray-200 dark:bg-gray-700"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className=" outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
                   <div className="flex justify-between">
                     <span className="text-lg text-gray-900 dark:text-gray-100">
                       Upper Class Wealth
