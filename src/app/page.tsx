@@ -153,7 +153,7 @@ export default function Home() {
               Societal Factors
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 overflow-y-auto flex-1">
+          <CardContent className="space-y-6 overflow-y-auto flex-1 min-h-0">
             <div className="space-y-6">
               {factors.map((factor) => (
                 <div key={factor.id} className="space-y-2">
@@ -318,8 +318,10 @@ export default function Home() {
                           onClick={() => applyPreset(preset.factors)}
                         >
                           {preset.name}
-                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap pointer-events-none">
-                            {preset.historicalOutcome}
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 w-[300px]">
+                            <div className="break-words whitespace-normal">
+                              {preset.historicalOutcome}
+                            </div>
                           </div>
                         </Button>
                       ))}
