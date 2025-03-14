@@ -16,12 +16,33 @@ export interface SimulationState {
 }
 
 export const DEFAULT_FACTORS: SocietalFactor[] = [
+  // Core Economic Factors
   {
     id: 'domestic-manufacturing',
     name: 'Domestic Manufacturing',
     value: 50,
     description: 'Affects job creation and economic independence',
   },
+  {
+    id: 'tax-rate',
+    name: 'Tax Rate',
+    value: 40,
+    description: 'Government revenue and wealth distribution',
+  },
+  {
+    id: 'economic-inequality',
+    name: 'Economic Inequality',
+    value: 50,
+    description: 'Wealth distribution and class divides',
+  },
+  {
+    id: 'research-development',
+    name: 'Research & Development',
+    value: 50,
+    description: 'Scientific advancement and innovation',
+  },
+
+  // Social Welfare Factors
   {
     id: 'government-aid',
     name: 'Government Aid',
@@ -53,28 +74,19 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     description: 'Environmental regulations and sustainability',
   },
   {
-    id: 'tax-rate',
-    name: 'Tax Rate',
-    value: 40,
-    description: 'Government revenue and wealth distribution',
+    id: 'environmental-regulation',
+    name: 'Environmental Regulation',
+    value: 50,
+    description:
+      'Government oversight and enforcement of environmental standards',
   },
+
+  // Social and Political Factors
   {
     id: 'media-freedom',
     name: 'Media Freedom',
     value: 60,
     description: 'Press freedom and information access',
-  },
-  {
-    id: 'self-defense',
-    name: 'Self-Defense Freedom',
-    value: 50,
-    description: 'Personal security and civil liberties',
-  },
-  {
-    id: 'research-development',
-    name: 'Research & Development',
-    value: 50,
-    description: 'Scientific advancement and innovation',
   },
   {
     id: 'corruption',
@@ -89,16 +101,43 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     description: 'Cultural unity and social trust',
   },
   {
-    id: 'economic-inequality',
-    name: 'Economic Inequality',
-    value: 50,
-    description: 'Wealth distribution and class divides',
-  },
-  {
     id: 'gender-equality',
     name: 'Gender Equality',
     value: 50,
     description: 'Level of equal opportunities and rights for all genders',
+  },
+  {
+    id: 'religious-influence',
+    name: 'Religious Influence',
+    value: 50,
+    description: 'Role of religion in shaping laws and social norms',
+  },
+
+  // Modern Societal Factors
+  {
+    id: 'closed-society',
+    name: 'Closed Society',
+    value: 50,
+    description:
+      'Restricted travel, controlled information, and government-regulated borders.',
+  },
+  {
+    id: 'one-child-policy',
+    name: 'One Child Policy',
+    description: 'Controls population growth and demographic balance.',
+    value: 50,
+  },
+  {
+    id: 'single-parent-household',
+    name: 'Single Parent Household',
+    description: 'Affects social stability and economic pressure on families.',
+    value: 50,
+  },
+  {
+    id: 'immigration-rate',
+    name: 'Immigration Rate',
+    value: 50,
+    description: 'Rate of immigration into society',
   },
   {
     id: 'child-labor',
@@ -107,23 +146,13 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     description: 'Prevalence of child labor in the workforce',
   },
   {
-    id: 'religious-influence',
-    name: 'Religious Influence',
+    id: 'self-defense',
+    name: 'Self-Defense Freedom',
     value: 50,
-    description: 'Role of religion in shaping laws and social norms',
+    description: 'Personal security and civil liberties',
   },
-  {
-    id: 'technological-adoption',
-    name: 'Technological Adoption',
-    value: 50,
-    description: 'Speed of adopting new technologies',
-  },
-  {
-    id: 'immigration-rate',
-    name: 'Immigration Rate',
-    value: 50,
-    description: 'Rate of immigration into society',
-  },
+
+  // Risk and Crisis Factors
   {
     id: 'natural-disaster-frequency',
     name: 'Natural Disaster Frequency',
@@ -136,6 +165,15 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     value: 20,
     description: 'Risk of internal conflict and civil war',
   },
+  {
+    id: 'joker-chaos-index',
+    name: 'Joker Chaos Index',
+    description:
+      'Randomly flips media freedom and corruption values (chaos reigns)',
+    value: 0,
+  },
+
+  // Fantasy Factors
   {
     id: 'mana-storm-intensity',
     name: 'Mana Storm Intensity',
@@ -153,31 +191,5 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     name: 'Godzilla Rampage',
     value: 5,
     description: 'Likelihood of giant monster attacks',
-  },
-  {
-    id: 'joker-chaos-index',
-    name: 'Joker Chaos Index',
-    description:
-      'Randomly flips media freedom and corruption values (chaos reigns)',
-    value: 0,
-  },
-  {
-    id: 'one-child-policy',
-    name: 'One Child Policy',
-    description: 'Controls population growth and demographic balance.',
-    value: 50,
-  },
-  {
-    id: 'single-parent-household',
-    name: 'Single Parent Household',
-    description: 'Affects social stability and economic pressure on families.',
-    value: 50,
-  },
-  {
-    id: 'closed-society',
-    name: 'Closed Society',
-    value: 50,
-    description:
-      'Restricted travel, controlled information, and government-regulated borders.',
   },
 ];
