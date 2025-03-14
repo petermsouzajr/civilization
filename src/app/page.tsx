@@ -7,7 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_FACTORS, SocietalFactor } from '@/types/simulation';
 import { calculateOutcomes } from '@/lib/simulation';
-import { PRESETS } from '@/types/presets';
+import { PRESETS, Preset } from '@/types/presets';
 import { cn } from '@/lib/utils';
 
 const PRESET_COLORS = {
@@ -183,9 +183,9 @@ export default function Home() {
     setSimulationState(calculateOutcomes(newFactors));
   };
 
-  const applyPreset = (preset: SocietalFactor[]) => {
+  const applyPreset = (preset: Preset) => {
     // Create a map of preset factors for easy lookup
-    const presetMap = new Map(preset.map((f) => [f.id, f]));
+    const presetMap = new Map(preset.factors.map((f) => [f.id, f]));
 
     // Create new factors array with all default factors
     const newFactors = DEFAULT_FACTORS.map((defaultFactor) => {
@@ -225,136 +225,9 @@ export default function Home() {
       </h1>
 
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 min-h-0">
-        {/* Left Panel: Controls */}
-        <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex flex-col min-h-0">
-          <CardHeader className="shrink-0">
-            <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
-              Societal Factors
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 overflow-y-auto min-h-0">
-            <div className="space-y-4 p-4">
-              {factors.map((factor) => (
-                <div
-                  key={factor.id}
-                  className="space-y-2 rounded-2xl p-4 border border-gray-400"
-                >
-                  <div className="flex justify-between">
-                    <label className="text-base font-medium text-gray-900 dark:text-gray-100">
-                      {factor.name}
-                    </label>
-
-                    <span className="text-base text-gray-700 dark:text-gray-300">
-                      {factor.value}%
-                    </span>
-                  </div>
-                  <Slider
-                    value={[factor.value]}
-                    onValueChange={([value]) =>
-                      handleFactorChange(factor.id, value)
-                    }
-                    max={100}
-                    step={1}
-                    className="[&_[role=slider]]:bg-gray-900 dark:[&_[role=slider]]:bg-gray-300"
-                  />
-                  <p className="text-base text-gray-700 dark:text-gray-300">
-                    {factor.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Right Panel: Results */}
+        {/* Left Column - Scenarios and Societal Factors */}
         <div className="flex flex-col gap-6 min-h-0">
-          {/* Top Card: Success Metrics */}
-          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
-            <CardHeader className="shrink-0">
-              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
-                Simulation Results
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2 outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-                <div className="flex justify-between">
-                  <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                    Overall Success Rate
-                  </span>
-                  <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                    {simulationState.successRate}%
-                  </span>
-                </div>
-                <Progress
-                  value={simulationState.successRate}
-                  className="h-2 bg-gray-200 dark:bg-gray-700"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className=" outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-                  <div className="flex justify-between">
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
-                      Lower Class Prosperity
-                    </span>
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
-                      {simulationState.lowerClassProsperity}%
-                    </span>
-                  </div>
-                  <Progress
-                    value={simulationState.lowerClassProsperity}
-                    className="h-2 bg-gray-200 dark:bg-gray-700"
-                  />
-                </div>
-                <div className=" outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-                  <div className="flex justify-between">
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
-                      Middle Class Stability
-                    </span>
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
-                      {simulationState.middleClassStability}%
-                    </span>
-                  </div>
-                  <Progress
-                    value={simulationState.middleClassStability}
-                    className="h-2 bg-gray-200 dark:bg-gray-700"
-                  />
-                </div>
-                <div className=" outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-                  <div className="flex justify-between">
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
-                      Upper Class Wealth
-                    </span>
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
-                      {simulationState.upperClassWealth}%
-                    </span>
-                  </div>
-                  <Progress
-                    value={simulationState.upperClassWealth}
-                    className="h-2 bg-gray-200 dark:bg-gray-700"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
-                  Current State
-                </h3>
-                <div
-                  className={cn(
-                    'p-4 rounded-lg transition-all duration-400 ease-in-out',
-                    getStatusColor(simulationState.currentState)
-                  )}
-                >
-                  <p className="text-center text-lg font-medium text-gray-900">
-                    {simulationState.currentState}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Bottom Card: Scenarios */}
+          {/* Scenarios Card */}
           <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex-1 flex flex-col min-h-0">
             <CardHeader className="shrink-0">
               <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
@@ -363,11 +236,11 @@ export default function Home() {
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto min-h-0">
               <div className="space-y-4">
-                <div className="space-y-2">
+                <div>
                   <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
                     Basic Scenarios
                   </h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {PRESETS.slice(0, 12).map((preset) => (
                       <Button
                         key={preset.name}
@@ -378,37 +251,31 @@ export default function Home() {
                             preset.name as keyof typeof PRESET_COLORS
                           ]
                         )}
-                        onClick={() => applyPreset(preset.factors)}
+                        onClick={() => applyPreset(preset)}
                       >
                         {preset.name}
                       </Button>
                     ))}
                   </div>
                 </div>
-
-                <div className="space-y-2">
+                <div>
                   <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
                     Historical Scenarios
                   </h3>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {PRESETS.slice(12).map((preset) => (
                       <Button
                         key={preset.name}
                         variant="outline"
                         className={cn(
-                          'w-full text-base transition-colors group relative',
+                          'w-full text-base transition-colors',
                           PRESET_COLORS[
                             preset.name as keyof typeof PRESET_COLORS
                           ]
                         )}
-                        onClick={() => applyPreset(preset.factors)}
+                        onClick={() => applyPreset(preset)}
                       >
                         {preset.name}
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 w-[300px]">
-                          <div className="break-words whitespace-normal">
-                            {preset.historicalOutcome}
-                          </div>
-                        </div>
                       </Button>
                     ))}
                   </div>
@@ -416,7 +283,159 @@ export default function Home() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Societal Factors Card */}
+          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex-1 flex flex-col min-h-0">
+            <CardHeader className="shrink-0">
+              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+                Societal Factors
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-y-auto min-h-0">
+              <div className="space-y-1">
+                {factors.map((factor) => (
+                  <div
+                    key={factor.id}
+                    className="space-y-1 rounded-2xl p-2 border border-gray-400 dark:border-gray-600"
+                  >
+                    <div className="flex justify-between">
+                      <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                        {factor.name}
+                      </span>
+                      <span className="text-base text-gray-700 dark:text-gray-300">
+                        {factor.value}%
+                      </span>
+                    </div>
+                    <Slider
+                      id={factor.id}
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={[factor.value]}
+                      onValueChange={(value) =>
+                        handleFactorChange(factor.id, value[0])
+                      }
+                      className="[&_[role=slider]]:bg-gray-900 dark:[&_[role=slider]]:bg-gray-300"
+                    />
+                    <p className="text-base text-gray-700 dark:text-gray-300">
+                      {factor.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Right Column - Simulation Results */}
+        <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex flex-col min-h-0">
+          <CardHeader className="shrink-0">
+            <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+              Simulation Results
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex-1 overflow-y-auto min-h-0 space-y-6">
+            {/* Success Metrics */}
+            <div className="space-y-2 outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
+              <div className="flex justify-between">
+                <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                  Overall Success Rate
+                </span>
+                <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                  {simulationState.successRate}%
+                </span>
+              </div>
+              <Progress
+                value={simulationState.successRate}
+                className="h-2 bg-gray-200 dark:bg-gray-700"
+              />
+            </div>
+
+            {/* Class Prosperity */}
+            <div className="space-y-2">
+              <div className="outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
+                <div className="flex justify-between">
+                  <span className="text-lg text-gray-900 dark:text-gray-100">
+                    Lower Class Prosperity
+                  </span>
+                  <span className="text-lg text-gray-900 dark:text-gray-100">
+                    {simulationState.lowerClassProsperity}%
+                  </span>
+                </div>
+                <Progress
+                  value={simulationState.lowerClassProsperity}
+                  className="h-2 bg-gray-200 dark:bg-gray-700"
+                />
+              </div>
+
+              <div className="outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
+                <div className="flex justify-between">
+                  <span className="text-lg text-gray-900 dark:text-gray-100">
+                    Middle Class Stability
+                  </span>
+                  <span className="text-lg text-gray-900 dark:text-gray-100">
+                    {simulationState.middleClassStability}%
+                  </span>
+                </div>
+                <Progress
+                  value={simulationState.middleClassStability}
+                  className="h-2 bg-gray-200 dark:bg-gray-700"
+                />
+              </div>
+
+              <div className="outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
+                <div className="flex justify-between">
+                  <span className="text-lg text-gray-900 dark:text-gray-100">
+                    Upper Class Wealth
+                  </span>
+                  <span className="text-lg text-gray-900 dark:text-gray-100">
+                    {simulationState.upperClassWealth}%
+                  </span>
+                </div>
+                <Progress
+                  value={simulationState.upperClassWealth}
+                  className="h-2 bg-gray-200 dark:bg-gray-700"
+                />
+              </div>
+            </div>
+
+            {/* Current State */}
+            <div className="space-y-2">
+              <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
+                Current State
+              </h3>
+              <div
+                className={cn(
+                  'p-4 rounded-lg transition-all duration-400 ease-in-out',
+                  getStatusColor(simulationState.currentState)
+                )}
+              >
+                <p className="text-center text-lg font-medium text-gray-900">
+                  {simulationState.currentState}
+                </p>
+              </div>
+            </div>
+
+            {/* Events */}
+            {simulationState.events.length > 0 && (
+              <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
+                <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Recent Events
+                </h3>
+                <ul className="space-y-2">
+                  {simulationState.events.map((event, index) => (
+                    <li
+                      key={index}
+                      className="text-sm text-gray-600 dark:text-gray-400"
+                    >
+                      {event}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </main>
   );
