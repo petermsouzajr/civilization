@@ -3,6 +3,7 @@ export interface SocietalFactor {
   name: string;
   value: number;
   description: string;
+  category?: string;
 }
 
 export interface SimulationState {
@@ -214,5 +215,21 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     name: 'Godzilla Rampage',
     value: 0,
     description: 'Frequency of giant monster attacks',
+  },
+  {
+    id: 'policing-deficiency',
+    name: 'Policing Deficiency',
+    value: 30,
+    description:
+      'Lack of law enforcement increases crime and reduces public safety.',
+    category: 'Social Welfare',
+  },
+  {
+    id: 'housing-cost',
+    name: 'Housing Cost',
+    value: 40,
+    description:
+      'Rising housing costs strain affordability and economic stability.',
+    category: 'Economic',
   },
 ];
