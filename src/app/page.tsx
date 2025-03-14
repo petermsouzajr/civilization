@@ -338,7 +338,7 @@ export default function Home() {
 
         {/* Right Column - Title and Simulation Results */}
         <div className="flex flex-col gap-6 min-h-0">
-          <h1 className="text-4xl font-bold text-right text-gray-100 dark:text-gray-50">
+          <h1 className="text-4xl font-bold text-center text-gray-100 dark:text-gray-50">
             Civilization Simulation
           </h1>
           <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
@@ -380,16 +380,16 @@ export default function Home() {
                   )}
                 >
                   <div className="flex justify-between">
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       Lower Class Prosperity
                     </span>
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {simulationState.lowerClassProsperity}%
                     </span>
                   </div>
                   <Progress
                     value={simulationState.lowerClassProsperity}
-                    className="h-2 bg-gray-200 dark:bg-gray-700"
+                    className="h-2 bg-gray-200  dark:bg-gray-700"
                   />
                 </div>
 
@@ -402,10 +402,10 @@ export default function Home() {
                   )}
                 >
                   <div className="flex justify-between">
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       Middle Class Stability
                     </span>
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {simulationState.middleClassStability}%
                     </span>
                   </div>
@@ -422,10 +422,10 @@ export default function Home() {
                   )}
                 >
                   <div className="flex justify-between">
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       Upper Class Wealth
                     </span>
-                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                       {simulationState.upperClassWealth}%
                     </span>
                   </div>
