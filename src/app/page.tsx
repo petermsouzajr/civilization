@@ -131,6 +131,19 @@ const getStatusColor = (state: string) => {
   return stateColors[state] || stateColors['Stable Society'];
 };
 
+const getSuccessBackgroundColor = (successRate: number): string => {
+  // Red for < 30% (danger)
+  if (successRate < 30) {
+    return 'bg-red-50 dark:bg-red-950/30';
+  }
+  // Yellow for 30-60% (warning)
+  if (successRate < 60) {
+    return 'bg-yellow-50 dark:bg-yellow-950/30';
+  }
+  // Green for >= 60% (success)
+  return 'bg-green-50 dark:bg-green-950/30';
+};
+
 const generateRandomVariation = (
   baseValue: number,
   variation: number = 10
@@ -220,10 +233,6 @@ export default function Home() {
 
   return (
     <main className="h-screen w-screen flex flex-col bg-gray-800 dark:bg-gray-950">
-      <h1 className="text-4xl font-bold text-center p-4 text-gray-100 dark:text-gray-50 shrink-0">
-        Civilization Simulation
-      </h1>
-
       <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 min-h-0">
         {/* Left Column - Scenarios and Societal Factors */}
         <div className="flex flex-col gap-6 min-h-0">
@@ -299,7 +308,7 @@ export default function Home() {
                     className="space-y-1 rounded-2xl p-2 border border-gray-400 dark:border-gray-600"
                   >
                     <div className="flex justify-between">
-                      <span className="text-base font-semibold text-gray-900 dark:text-gray-100">
+                      <span className="text-base font-bold text-gray-900 dark:text-gray-100">
                         {factor.name}
                       </span>
                       <span className="text-base text-gray-700 dark:text-gray-300">
@@ -327,115 +336,144 @@ export default function Home() {
           </Card>
         </div>
 
-        {/* Right Column - Simulation Results */}
-        <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex flex-col min-h-0">
-          <CardHeader className="shrink-0">
-            <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
-              Simulation Results
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 overflow-y-auto min-h-0 space-y-6">
-            {/* Success Metrics */}
-            <div className="space-y-2 outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-              <div className="flex justify-between">
-                <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                  Overall Success Rate
-                </span>
-                <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                  {simulationState.successRate}%
-                </span>
-              </div>
-              <Progress
-                value={simulationState.successRate}
-                className="h-2 bg-gray-200 dark:bg-gray-700"
-              />
-            </div>
-
-            {/* Class Prosperity */}
-            <div className="space-y-2">
-              <div className="outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-                <div className="flex justify-between">
-                  <span className="text-lg text-gray-900 dark:text-gray-100">
-                    Lower Class Prosperity
-                  </span>
-                  <span className="text-lg text-gray-900 dark:text-gray-100">
-                    {simulationState.lowerClassProsperity}%
-                  </span>
-                </div>
-                <Progress
-                  value={simulationState.lowerClassProsperity}
-                  className="h-2 bg-gray-200 dark:bg-gray-700"
-                />
-              </div>
-
-              <div className="outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-                <div className="flex justify-between">
-                  <span className="text-lg text-gray-900 dark:text-gray-100">
-                    Middle Class Stability
-                  </span>
-                  <span className="text-lg text-gray-900 dark:text-gray-100">
-                    {simulationState.middleClassStability}%
-                  </span>
-                </div>
-                <Progress
-                  value={simulationState.middleClassStability}
-                  className="h-2 bg-gray-200 dark:bg-gray-700"
-                />
-              </div>
-
-              <div className="outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
-                <div className="flex justify-between">
-                  <span className="text-lg text-gray-900 dark:text-gray-100">
-                    Upper Class Wealth
-                  </span>
-                  <span className="text-lg text-gray-900 dark:text-gray-100">
-                    {simulationState.upperClassWealth}%
-                  </span>
-                </div>
-                <Progress
-                  value={simulationState.upperClassWealth}
-                  className="h-2 bg-gray-200 dark:bg-gray-700"
-                />
-              </div>
-            </div>
-
-            {/* Current State */}
-            <div className="space-y-2">
-              <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
-                Current State
-              </h3>
+        {/* Right Column - Title and Simulation Results */}
+        <div className="flex flex-col gap-6 min-h-0">
+          <h1 className="text-4xl font-bold text-right text-gray-100 dark:text-gray-50">
+            Civilization Simulation
+          </h1>
+          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
+            <CardHeader className="shrink-0">
+              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+                Simulation Results
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Success Metrics */}
               <div
                 className={cn(
-                  'p-4 rounded-lg transition-all duration-400 ease-in-out',
-                  getStatusColor(simulationState.currentState)
+                  'space-y-2 outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4 transition-colors duration-300',
+                  getSuccessBackgroundColor(simulationState.successRate)
                 )}
               >
-                <p className="text-center text-lg font-medium text-gray-900">
-                  {simulationState.currentState}
-                </p>
+                <div className="flex justify-between">
+                  <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    Overall Success Rate
+                  </span>
+                  <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    {simulationState.successRate}%
+                  </span>
+                </div>
+                <Progress
+                  value={simulationState.successRate}
+                  className="h-2 bg-gray-200 dark:bg-gray-700"
+                />
               </div>
-            </div>
 
-            {/* Events */}
-            {simulationState.events.length > 0 && (
-              <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
-                <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Recent Events
-                </h3>
-                <ul className="space-y-2">
-                  {simulationState.events.map((event, index) => (
-                    <li
-                      key={index}
-                      className="text-sm text-gray-600 dark:text-gray-400"
-                    >
-                      {event}
-                    </li>
-                  ))}
-                </ul>
+              {/* Class Prosperity */}
+              <div className="space-y-2">
+                <div
+                  className={cn(
+                    'outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4 transition-colors duration-300',
+                    getSuccessBackgroundColor(
+                      simulationState.lowerClassProsperity
+                    )
+                  )}
+                >
+                  <div className="flex justify-between">
+                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                      Lower Class Prosperity
+                    </span>
+                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                      {simulationState.lowerClassProsperity}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={simulationState.lowerClassProsperity}
+                    className="h-2 bg-gray-200 dark:bg-gray-700"
+                  />
+                </div>
+
+                <div
+                  className={cn(
+                    'outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4 transition-colors duration-300',
+                    getSuccessBackgroundColor(
+                      simulationState.middleClassStability
+                    )
+                  )}
+                >
+                  <div className="flex justify-between">
+                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                      Middle Class Stability
+                    </span>
+                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                      {simulationState.middleClassStability}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={simulationState.middleClassStability}
+                    className="h-2 bg-gray-200 dark:bg-gray-700"
+                  />
+                </div>
+
+                <div
+                  className={cn(
+                    'outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4 transition-colors duration-300',
+                    getSuccessBackgroundColor(simulationState.upperClassWealth)
+                  )}
+                >
+                  <div className="flex justify-between">
+                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                      Upper Class Wealth
+                    </span>
+                    <span className="text-lg text-gray-900 dark:text-gray-100">
+                      {simulationState.upperClassWealth}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={simulationState.upperClassWealth}
+                    className="h-2 bg-gray-200 dark:bg-gray-700"
+                  />
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
+
+              {/* Current State */}
+              <div className="space-y-2">
+                <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
+                  Current State
+                </h3>
+                <div
+                  className={cn(
+                    'p-4 rounded-lg transition-all duration-400 ease-in-out',
+                    getStatusColor(simulationState.currentState)
+                  )}
+                >
+                  <p className="text-center text-lg font-medium text-gray-900">
+                    {simulationState.currentState}
+                  </p>
+                </div>
+              </div>
+
+              {/* Events */}
+              {simulationState.events.length > 0 && (
+                <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
+                  <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Recent Events
+                  </h3>
+                  <ul className="space-y-2">
+                    {simulationState.events.map((event, index) => (
+                      <li
+                        key={index}
+                        className="text-sm text-gray-600 dark:text-gray-400"
+                      >
+                        {event}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </main>
   );
