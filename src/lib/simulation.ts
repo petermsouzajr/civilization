@@ -268,7 +268,7 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   );
 
   // Determine the current state with more granular conditions
-  let currentState = 'Transitional State';
+  let currentState = 'Stable Society';
   const events: string[] = [];
 
   // Class dominance states with more nuanced thresholds

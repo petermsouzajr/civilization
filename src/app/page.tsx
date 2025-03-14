@@ -86,12 +86,10 @@ const getStatusColor = (state: string) => {
     'Technological Boom': 'bg-emerald-200 border-emerald-400',
     'Cultural Renaissance': 'bg-emerald-300 border-emerald-500',
     'Harmonious Society': 'bg-emerald-400 border-emerald-600',
-
-    // Default State
-    'Mixed Society': 'bg-gray-100/50 border-gray-200',
+    'Stable Society': 'bg-emerald-100 border-emerald-300',
   };
 
-  return stateColors[state] || stateColors['Mixed Society'];
+  return stateColors[state] || stateColors['Stable Society'];
 };
 
 const generateRandomVariation = (
