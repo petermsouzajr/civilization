@@ -219,25 +219,25 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen w-screen flex flex-col bg-gray-800 dark:bg-gray-950 overflow-hidden">
+    <main className="h-screen w-screen flex flex-col bg-gray-800 dark:bg-gray-950">
       <h1 className="text-4xl font-bold text-center p-4 text-gray-100 dark:text-gray-50 shrink-0">
         Civilization Simulation
       </h1>
 
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 min-h-0">
         {/* Left Panel: Controls */}
-        <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex flex-col h-full overflow-hidden">
+        <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex flex-col min-h-0">
           <CardHeader className="shrink-0">
             <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
               Societal Factors
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 overflow-y-auto flex-1 min-h-0">
+          <CardContent className="flex-1 overflow-y-auto min-h-0">
             <div className="space-y-4 p-4">
               {factors.map((factor) => (
                 <div
                   key={factor.id}
-                  className="space-y-2  rounded-2xl p-4 border border-gray-400"
+                  className="space-y-2 rounded-2xl p-4 border border-gray-400"
                 >
                   <div className="flex justify-between">
                     <label className="text-base font-medium text-gray-900 dark:text-gray-100">
@@ -267,15 +267,16 @@ export default function Home() {
         </Card>
 
         {/* Right Panel: Results */}
-        <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex flex-col h-full overflow-hidden">
-          <CardHeader className="shrink-0">
-            <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
-              Simulation Results
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6 overflow-y-auto flex-1">
-            <div className="space-y-6">
-              <div className="space-y-2">
+        <div className="flex flex-col gap-6 min-h-0">
+          {/* Top Card: Success Metrics */}
+          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
+            <CardHeader className="shrink-0">
+              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+                Simulation Results
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-2 outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-4">
                 <div className="flex justify-between">
                   <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                     Overall Success Rate
@@ -335,79 +336,87 @@ export default function Home() {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
+                  Current State
+                </h3>
+                <div
+                  className={cn(
+                    'p-4 rounded-lg transition-all duration-400 ease-in-out',
+                    getStatusColor(simulationState.currentState)
+                  )}
+                >
+                  <p className="text-center text-lg font-medium text-gray-900">
+                    {simulationState.currentState}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Bottom Card: Scenarios */}
+          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex-1 flex flex-col min-h-0">
+            <CardHeader className="shrink-0">
+              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+                Scenarios
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-y-auto min-h-0">
               <div className="space-y-4">
-                <div className="space-y-2 ">
-                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
-                    Current State
+                <div className="space-y-2">
+                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                    Basic Scenarios
                   </h3>
-                  <div
-                    className={cn(
-                      'p-4 rounded-lg transition-all duration-400 ease-in-out',
-                      getStatusColor(simulationState.currentState)
-                    )}
-                  >
-                    <p className="text-center text-lg font-medium text-gray-900">
-                      {simulationState.currentState}
-                    </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {PRESETS.slice(0, 12).map((preset) => (
+                      <Button
+                        key={preset.name}
+                        variant="outline"
+                        className={cn(
+                          'w-full text-base transition-colors',
+                          PRESET_COLORS[
+                            preset.name as keyof typeof PRESET_COLORS
+                          ]
+                        )}
+                        onClick={() => applyPreset(preset.factors)}
+                      >
+                        {preset.name}
+                      </Button>
+                    ))}
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
-                      Basic Scenarios
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      {PRESETS.slice(0, 12).map((preset) => (
-                        <Button
-                          key={preset.name}
-                          variant="outline"
-                          className={cn(
-                            'w-full text-base transition-colors',
-                            PRESET_COLORS[
-                              preset.name as keyof typeof PRESET_COLORS
-                            ]
-                          )}
-                          onClick={() => applyPreset(preset.factors)}
-                        >
-                          {preset.name}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
-                      Historical Scenarios
-                    </h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      {PRESETS.slice(12).map((preset) => (
-                        <Button
-                          key={preset.name}
-                          variant="outline"
-                          className={cn(
-                            'w-full text-base transition-colors group relative',
-                            PRESET_COLORS[
-                              preset.name as keyof typeof PRESET_COLORS
-                            ]
-                          )}
-                          onClick={() => applyPreset(preset.factors)}
-                        >
-                          {preset.name}
-                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 w-[300px]">
-                            <div className="break-words whitespace-normal">
-                              {preset.historicalOutcome}
-                            </div>
+                <div className="space-y-2">
+                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                    Historical Scenarios
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {PRESETS.slice(12).map((preset) => (
+                      <Button
+                        key={preset.name}
+                        variant="outline"
+                        className={cn(
+                          'w-full text-base transition-colors group relative',
+                          PRESET_COLORS[
+                            preset.name as keyof typeof PRESET_COLORS
+                          ]
+                        )}
+                        onClick={() => applyPreset(preset.factors)}
+                      >
+                        {preset.name}
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-50 w-[300px]">
+                          <div className="break-words whitespace-normal">
+                            {preset.historicalOutcome}
                           </div>
-                        </Button>
-                      ))}
-                    </div>
+                        </div>
+                      </Button>
+                    ))}
                   </div>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </main>
   );

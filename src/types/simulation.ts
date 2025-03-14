@@ -27,15 +27,13 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     id: 'tax-rate',
     name: 'Tax Rate',
     value: 0,
-    description:
-      'Overall tax burden on society. Higher values indicate more government revenue but potential economic strain.',
+    description: 'Overall tax burden on society.',
   },
   {
     id: 'economic-inequality',
     name: 'Economic Inequality',
     value: 0,
-    description:
-      'Gap between rich and poor. Higher values indicate greater wealth concentration.',
+    description: 'Gap between rich and poor.',
   },
   {
     id: 'research-development',
