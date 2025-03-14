@@ -205,54 +205,54 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   );
 
   // Determine current state based on success rate and specific conditions
-  let currentState = 'Stable Society';
+  let currentState = 'Moderately Stable Society';
   if (successRate < 20) {
-    currentState = 'Failed State';
+    currentState = 'Complete Societal Collapse';
   } else if (successRate < 40) {
-    currentState = 'Crisis State';
+    currentState = 'Severe Economic Crisis';
   } else if (successRate < 60) {
-    currentState = 'Unstable Society';
+    currentState = 'Social and Economic Instability';
   } else if (successRate < 80) {
-    currentState = 'Stable Society';
+    currentState = 'Moderately Stable Society';
   } else {
-    currentState = 'Prosperous Society';
+    currentState = 'Highly Prosperous Society';
   }
 
   // Special state conditions
   if ((factorMap.get('joker-chaos-index') || 0) > 80) {
-    currentState = 'Gotham Anarchy';
+    currentState = 'Complete Societal Anarchy';
   }
   if (oneChildPolicyEffect > 0.8) {
-    currentState = 'Demographic Crisis';
+    currentState = 'Severe Demographic Imbalance';
   }
   if (singleParentEffect > 0.8) {
-    currentState = 'Family Structure Crisis';
+    currentState = 'Family Structure Breakdown';
   }
   if ((factorMap.get('closed-society') || 0) > 80) {
-    currentState = 'Isolated Society';
+    currentState = 'Total Societal Isolation';
   }
   if ((factorMap.get('closed-society') || 0) > 60) {
-    currentState = 'Restricted Society';
+    currentState = 'Restricted Social Freedom';
   }
   if (childLaborEffect > 0.7) {
-    currentState = 'Child Labor Crisis';
+    currentState = 'Widespread Child Labor Crisis';
   }
   if (immigrationEffect > 0.8) {
-    currentState = 'Immigration Surge';
+    currentState = 'Mass Immigration Surge';
   }
 
   // Add special state conditions for new factors
   if (inflationEffect > 0.7) {
-    currentState = 'Hyperinflation Crisis';
+    currentState = 'Severe Hyperinflation Crisis';
   }
   if (energyCostEffect > 0.8) {
-    currentState = 'Energy Crisis';
+    currentState = 'Critical Energy Shortage';
   }
   if (automationEffect > 0.8) {
-    currentState = 'Automation Divide';
+    currentState = 'Automation-Induced Unemployment';
   }
   if (publicDebtEffect > 0.9) {
-    currentState = 'Debt Collapse';
+    currentState = 'National Debt Collapse';
   }
 
   return {
@@ -434,42 +434,42 @@ const determineCurrentState = (
 ): string => {
   // Fantasy states
   if (fantasyEffects.infrastructureDamage > 0.7) {
-    return 'Environmental Crisis';
+    return 'Severe Environmental Crisis';
   }
   if (fantasyEffects.cohesionDamage > 0.7) {
-    return 'Civil War';
+    return 'Full-Scale Civil War';
   }
   if (fantasyEffects.manaEffect > 0.5) {
-    return 'Planeswalker Chaos';
+    return 'Magical Energy Chaos';
   }
   if (fantasyEffects.snapEffect < 0.5) {
-    return 'Infinity Crisis';
+    return 'Population Reduction Crisis';
   }
   if (fantasyEffects.successRatePenalty > 0.5) {
-    return 'Kaiju Chaos';
+    return 'Monster-Induced Chaos';
   }
 
   // Base states
   if (lowerClassProsperity < 0.3) {
-    return 'Lower Class Crisis';
+    return 'Lower Class Poverty Crisis';
   }
   if (middleClassStability < 0.3) {
-    return 'Middle Class Instability';
+    return 'Middle Class Economic Instability';
   }
   if (upperClassWealth < 0.3) {
-    return 'Upper Class Decline';
+    return 'Upper Class Wealth Decline';
   }
   if (factorMap['corruption'] > 70) {
-    return 'Corrupt State';
+    return 'Widespread Government Corruption';
   }
   if (factorMap['social-cohesion'] < 30) {
-    return 'Social Fragmentation';
+    return 'Severe Social Fragmentation';
   }
   if (factorMap['economic-inequality'] > 70) {
-    return 'Economic Oligarchy';
+    return 'Extreme Economic Inequality';
   }
 
-  return 'Stable Society';
+  return 'Moderately Stable Society';
 };
 
 // Update event generation to include fantasy events

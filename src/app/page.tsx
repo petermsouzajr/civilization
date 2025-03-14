@@ -358,7 +358,7 @@ export default function Home() {
                       Basic Scenarios
                     </h3>
                     <div className="grid grid-cols-2 gap-2">
-                      {PRESETS.slice(0, 6).map((preset) => (
+                      {PRESETS.slice(0, 12).map((preset) => (
                         <Button
                           key={preset.name}
                           variant="outline"
@@ -381,7 +381,7 @@ export default function Home() {
                       Historical Scenarios
                     </h3>
                     <div className="grid grid-cols-2 gap-2">
-                      {PRESETS.slice(6).map((preset) => (
+                      {PRESETS.slice(12).map((preset) => (
                         <Button
                           key={preset.name}
                           variant="outline"
