@@ -26,6 +26,10 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     'mana-storm-intensity': 10,
     'thanos-snap-probability': 5,
     'godzilla-rampage': 5,
+    'joker-chaos-index': 0,
+    'one-child-policy': 50,
+    'single-parent-household': 50,
+    'closed-society': 50,
   };
 
   // Create factor map with defaults for missing values
@@ -115,16 +119,51 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   const godzillaInfrastructurePenalty =
     (factorMap['godzilla-rampage'] * (100 - factorMap['infrastructure'])) / 100;
 
-  // Calculate governance effectiveness with corruption and social cohesion
+  // New factor effects
+  const jokerChaosEffect = factorMap['joker-chaos-index'] / 100;
+  const oneChildPolicyEffect = factorMap['one-child-policy'] / 100;
+  const singleParentEffect = factorMap['single-parent-household'] / 100;
+  const closedSocietyEffect = factorMap['closed-society'] / 100;
+
+  // Apply Joker Chaos effects
+  const jokerMediaFlip =
+    jokerChaosEffect > 0.5
+      ? 100 - factorMap['media-freedom']
+      : factorMap['media-freedom'];
+  const jokerCorruptionFlip =
+    jokerChaosEffect > 0.5
+      ? 100 - factorMap['corruption']
+      : factorMap['corruption'];
+  const jokerCohesionDamage = jokerChaosEffect * 0.8;
+
+  // Apply One Child Policy effects
+  const oneChildDemographicImpact = oneChildPolicyEffect * 0.6;
+  const oneChildSocialImpact = oneChildPolicyEffect * 0.4;
+
+  // Apply Single Parent Household effects
+  const singleParentSocialImpact = singleParentEffect * 0.7;
+  const singleParentEconomicImpact = singleParentEffect * 0.5;
+
+  // Apply Closed Society effects
+  const closedSocietyMediaImpact = closedSocietyEffect * 0.8;
+  const closedSocietyTravelImpact = closedSocietyEffect * 0.6;
+  const closedSocietyTechImpact = closedSocietyEffect * 0.4;
+  const closedSocietyCohesionImpact = closedSocietyEffect * 0.3;
+
+  // Update governance effectiveness with new factors
   const governanceEffectiveness =
-    (factorMap['media-freedom'] * 0.4 +
+    (jokerMediaFlip * 0.4 +
       factorMap['infrastructure'] * 0.3 +
       factorMap['education'] * 0.3 -
-      factorMap['corruption'] * 0.2 +
+      jokerCorruptionFlip * 0.2 +
       factorMap['social-cohesion'] * 0.2 -
+      jokerCohesionDamage * 0.3 -
+      oneChildSocialImpact * 0.2 -
+      singleParentSocialImpact * 0.2 -
       disasterInfrastructurePenalty * 0.2 -
       warStabilityPenalty * 0.3 -
-      godzillaInfrastructurePenalty * 0.2) /
+      godzillaInfrastructurePenalty * 0.2 +
+      closedSocietyEffect * 0.4) /
     100;
 
   // Calculate corruption factor
@@ -513,6 +552,22 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     factorMap['social-cohesion'] < 30
   ) {
     currentState = 'Immigration Crisis';
+  }
+
+  // Update state determination to include new states
+  if (jokerChaosEffect > 0.8) {
+    currentState = 'Gotham Anarchy';
+  } else if (oneChildPolicyEffect > 0.8) {
+    currentState = 'Demographic Crisis';
+  } else if (singleParentEffect > 0.8) {
+    currentState = 'Family Structure Crisis';
+  }
+
+  // Update state determination to include closed society states
+  if (closedSocietyEffect > 0.8) {
+    currentState = 'Isolated Society';
+  } else if (closedSocietyEffect > 0.6) {
+    currentState = 'Restricted Society';
   }
 
   return {

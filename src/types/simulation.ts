@@ -154,4 +154,30 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     value: 5,
     description: 'Likelihood of giant monster attacks',
   },
+  {
+    id: 'joker-chaos-index',
+    name: 'Joker Chaos Index',
+    description:
+      'Randomly flips media freedom and corruption values (chaos reigns)',
+    value: 0,
+  },
+  {
+    id: 'one-child-policy',
+    name: 'One Child Policy',
+    description: 'Controls population growth and demographic balance.',
+    value: 50,
+  },
+  {
+    id: 'single-parent-household',
+    name: 'Single Parent Household',
+    description: 'Affects social stability and economic pressure on families.',
+    value: 50,
+  },
+  {
+    id: 'closed-society',
+    name: 'Closed Society',
+    value: 50,
+    description:
+      'Restricted travel, controlled information, and government-regulated borders.',
+  },
 ];

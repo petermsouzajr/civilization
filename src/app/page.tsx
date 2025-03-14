@@ -87,6 +87,15 @@ const getStatusColor = (state: string) => {
     'Cultural Renaissance': 'bg-emerald-300 border-emerald-500',
     'Harmonious Society': 'bg-emerald-400 border-emerald-600',
     'Stable Society': 'bg-emerald-100 border-emerald-300',
+
+    // New States
+    'Gotham Anarchy': 'bg-purple-800 border-purple-900',
+    'Demographic Crisis': 'bg-pink-200 border-pink-400',
+    'Family Structure Crisis': 'bg-rose-200 border-rose-400',
+
+    // Closed Society States - Indigo spectrum
+    'Isolated Society': 'bg-indigo-800 border-indigo-900',
+    'Restricted Society': 'bg-indigo-700 border-indigo-800',
   };
 
   return stateColors[state] || stateColors['Stable Society'];
@@ -152,13 +161,17 @@ export default function Home() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 overflow-y-auto flex-1 min-h-0">
-            <div className="space-y-6">
+            <div className="space-y-4 p-4">
               {factors.map((factor) => (
-                <div key={factor.id} className="space-y-2">
+                <div
+                  key={factor.id}
+                  className="space-y-2  rounded-2xl p-4 border border-gray-400"
+                >
                   <div className="flex justify-between">
                     <label className="text-base font-medium text-gray-900 dark:text-gray-100">
                       {factor.name}
                     </label>
+
                     <span className="text-base text-gray-700 dark:text-gray-300">
                       {factor.value}%
                     </span>
@@ -220,7 +233,6 @@ export default function Home() {
                     className="h-2 bg-gray-200 dark:bg-gray-700"
                   />
                 </div>
-
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-lg text-gray-900 dark:text-gray-100">
@@ -235,7 +247,6 @@ export default function Home() {
                     className="h-2 bg-gray-200 dark:bg-gray-700"
                   />
                 </div>
-
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-lg text-gray-900 dark:text-gray-100">
@@ -252,27 +263,22 @@ export default function Home() {
                 </div>
               </div>
 
-              <div
-                className={cn(
-                  'p-4 rounded-lg transition-all duration-400 ease-in-out',
-                  getStatusColor(simulationState.currentState)
-                )}
-              >
-                <p className="text-center text-lg font-medium text-gray-900">
-                  {simulationState.currentState}
-                </p>
-              </div>
-
               <div className="space-y-4">
-                <Button
-                  className="w-full bg-gray-900 hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 text-white text-base"
-                  onClick={() => {
-                    setFactors(DEFAULT_FACTORS);
-                    setSimulationState(calculateOutcomes(DEFAULT_FACTORS));
-                  }}
-                >
-                  Reset Simulation
-                </Button>
+                <div className="space-y-2 ">
+                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
+                    Current State
+                  </h3>
+                  <div
+                    className={cn(
+                      'p-4 rounded-lg transition-all duration-400 ease-in-out',
+                      getStatusColor(simulationState.currentState)
+                    )}
+                  >
+                    <p className="text-center text-lg font-medium text-gray-900">
+                      {simulationState.currentState}
+                    </p>
+                  </div>
+                </div>
 
                 <div className="space-y-4">
                   <div className="space-y-2">
