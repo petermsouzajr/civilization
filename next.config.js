@@ -6,7 +6,7 @@ const nextConfig = {
   // - Unused variables in simulation.ts and tests
   // - useEffect dependencies in page.tsx
   // - Explicit 'any' types in simulation.ts
-  output: 'standalone',
+  // output: 'standalone',
   images: {
     unoptimized: true,
   },
@@ -29,6 +29,8 @@ const nextConfig = {
   experimental: {
     typedRoutes: false,
   },
+  basePath: '/civilization',
+  output: 'export',
 };
 
 module.exports = nextConfig;
