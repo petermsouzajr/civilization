@@ -83,10 +83,9 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     value: number,
     totalPenalties: number
   ): number => {
-    if (totalPenalties < 150) {
-      return Math.max(10, value); // Minimum 10 unless storm threshold met
-    }
-    return value; // Allow 0 only in storm conditions
+    // Allow full range of values from 0-100
+    // No artificial floor - extreme failures can reach 0
+    return value;
   };
 
   // Calculate corruption factor for government programs
@@ -272,10 +271,26 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         childLaborEffect * 0.2 -
         singleParentEffect * 0.15 -
         (factorMap.get('natural-disaster-frequency') || 0) * 0.15 -
-        (factorMap.get('domestic-war-risk') || 0) * 0.15 +
+        (factorMap.get('domestic-war-risk') || 0) * 0.15 -
+        // Pandemic effects - higher impact on lower class (2x factor)
+        (factorMap.get('public-health-crisis') || 0) * 0.3 +
         grapheneProductionEffect * 0.5
     ),
     totalPenalties
+  );
+
+  // Add compounding crisis multiplier for pandemic + unemployment
+  const publicHealthCrisis = factorMap.get('public-health-crisis') || 0;
+  const unemploymentRate = factorMap.get('unemployment-rate') || 0;
+  const compoundingCrisisMultiplier =
+    publicHealthCrisis > 50 && unemploymentRate > 50
+      ? 1 + (publicHealthCrisis + unemploymentRate - 100) / 200
+      : 1;
+
+  // Apply compounding crisis multiplier to lower class
+  lowerClassProsperity = Math.max(
+    0,
+    lowerClassProsperity / compoundingCrisisMultiplier
   );
 
   const middleClassStability = applyStormThreshold(
@@ -315,10 +330,18 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         oneChildPolicyEffect * 0.2 -
         immigrationEffect * 0.15 -
         (factorMap.get('natural-disaster-frequency') || 0) * 0.15 -
-        (factorMap.get('domestic-war-risk') || 0) * 0.2 +
+        (factorMap.get('domestic-war-risk') || 0) * 0.2 -
+        // Pandemic effects - moderate impact on middle class (1.5x factor)
+        (factorMap.get('public-health-crisis') || 0) * 0.2 +
         grapheneProductionEffect * 0.4
     ),
     totalPenalties
+  );
+
+  // Apply compounding crisis multiplier to middle class (at 0.8x the impact of lower class)
+  const middleClassAdjusted = Math.max(
+    0,
+    middleClassStability / (1 + (compoundingCrisisMultiplier - 1) * 0.8)
   );
 
   const upperClassWealth = applyStormThreshold(
@@ -360,10 +383,18 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         godzillaEffect * 0.15 -
         childLaborEffect * 0.1 +
         (factorMap.get('natural-disaster-frequency') || 0) * 0.1 -
-        (factorMap.get('domestic-war-risk') || 0) * 0.15 +
+        (factorMap.get('domestic-war-risk') || 0) * 0.15 -
+        // Pandemic effects - minimal impact on upper class (0.5x factor)
+        (factorMap.get('public-health-crisis') || 0) * 0.1 +
         grapheneProductionEffect * 0.5
     ),
     totalPenalties
+  );
+
+  // Apply compounding crisis multiplier to upper class (at 0.4x the impact of lower class)
+  const upperClassAdjusted = Math.max(
+    0,
+    upperClassWealth / (1 + (compoundingCrisisMultiplier - 1) * 0.4)
   );
 
   // Calculate inequality penalty with capped impact
@@ -429,8 +460,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
 
   const successRate = normalizeValue(
     (lowerClassProsperity * 0.4 +
-      middleClassStability * 0.35 +
-      upperClassWealth * 0.25) *
+      middleClassAdjusted * 0.35 +
+      upperClassAdjusted * 0.25) *
       scalingFactor +
       cohesionBonus -
       demographicPenalty +
@@ -449,8 +480,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   // Use our enhanced determineCurrentState function
   const currentState = determineCurrentState(
     lowerClassProsperity / 100,
-    middleClassStability / 100,
-    upperClassWealth / 100,
+    middleClassAdjusted / 100,
+    upperClassAdjusted / 100,
     factorRecord,
     fantasyEffects
   );
@@ -462,8 +493,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     factors,
     successRate: Math.round(successRate),
     lowerClassProsperity: Math.round(lowerClassProsperity),
-    middleClassStability: Math.round(middleClassStability),
-    upperClassWealth: Math.round(upperClassWealth),
+    middleClassStability: Math.round(middleClassAdjusted),
+    upperClassWealth: Math.round(upperClassAdjusted),
     currentState,
     events,
   };
@@ -584,6 +615,35 @@ export const runSimulation = (factors: SocietalFactor[]): SimulationState => {
   middleClassStability -= fantasyEffects.middleClassImpact;
   upperClassWealth += fantasyEffects.manaEffect * 20;
 
+  // Apply pandemic effects differently to each class
+  const publicHealthCrisis = factorMap['public-health-crisis'] || 0;
+  const unemploymentRate = factorMap['unemployment-rate'] || 0;
+
+  // Calculate compounding crisis multiplier
+  const compoundingCrisisMultiplier =
+    publicHealthCrisis > 50 && unemploymentRate > 50
+      ? 1 + (publicHealthCrisis + unemploymentRate - 100) / 200
+      : 1;
+
+  // Apply direct pandemic impacts with class-specific weights
+  lowerClassProsperity -= publicHealthCrisis * 0.3; // 2x impact on lower class
+  middleClassStability -= publicHealthCrisis * 0.2; // 1.5x impact on middle class
+  upperClassWealth -= publicHealthCrisis * 0.1; // 0.5x impact on upper class
+
+  // Apply compounding effects with different sensitivity by class
+  lowerClassProsperity = Math.max(
+    0,
+    lowerClassProsperity / compoundingCrisisMultiplier
+  );
+  middleClassStability = Math.max(
+    0,
+    middleClassStability / (1 + (compoundingCrisisMultiplier - 1) * 0.8)
+  );
+  upperClassWealth = Math.max(
+    0,
+    upperClassWealth / (1 + (compoundingCrisisMultiplier - 1) * 0.4)
+  );
+
   // Apply redistribution
   const redistributed = redistributeResources(
     lowerClassProsperity,
@@ -609,9 +669,9 @@ export const runSimulation = (factors: SocietalFactor[]): SimulationState => {
 
   // Determine current state with fantasy states
   const currentState = determineCurrentState(
-    redistributed.lowerClassProsperity,
-    redistributed.middleClassStability,
-    redistributed.upperClassWealth,
+    redistributed.lowerClassProsperity / 100,
+    redistributed.middleClassStability / 100,
+    redistributed.upperClassWealth / 100,
     factorMap,
     fantasyEffects
   );
@@ -905,59 +965,132 @@ const createFactorMap = (factors: SocietalFactor[]): Record<string, number> => {
   }, {} as Record<string, number>);
 };
 
-// Calculate prosperity for each class
+// Sigmoid adjustment function to slow movement at extremes
+const sigmoidAdjust = (value: number): number => {
+  // Sigmoid function that maps 0-100 to 0-100 with compression at ends
+  const k = 0.08; // Steepness factor (lower = slower extremes)
+  const shifted = value - 50; // Center at 0
+  const sigmoid = 1 / (1 + Math.exp(-k * shifted * 4)); // S-curve between 0-1
+  return sigmoid * 100; // Scale to 0-100
+};
+
+// Calculate prosperity for each class using multiplicative factors and sigmoid adjustment
 const calculateLowerClassProsperity = (
   factorMap: Record<string, number>
 ): number => {
-  const baseProsperity =
-    (factorMap['government-aid'] * 0.3 +
-      factorMap['healthcare'] * 0.2 +
-      factorMap['education'] * 0.2 +
-      factorMap['infrastructure'] * 0.15 +
-      factorMap['environmental-regulation'] * 0.15) /
-    100;
+  let prosperity = 50; // Start at base resilience
 
-  const penalties =
-    (factorMap['corruption'] * 0.4 + factorMap['economic-inequality'] * 0.6) /
-    100;
+  // Positive multiplicative factors - each point of factor adds a percentage to the base
+  prosperity *= 1 + ((factorMap['government-aid'] || 0) / 100) * 0.6;
+  prosperity *= 1 + ((factorMap['healthcare'] || 0) / 100) * 0.4;
+  prosperity *= 1 + ((factorMap['education'] || 0) / 100) * 0.4;
+  prosperity *= 1 + ((factorMap['infrastructure'] || 0) / 100) * 0.3;
+  prosperity *= 1 + ((factorMap['environmental-regulation'] || 0) / 100) * 0.3;
+  prosperity *= 1 + ((factorMap['labor-rights'] || 0) / 100) * 0.3;
+  prosperity *= 1 + ((factorMap['political-stability'] || 0) / 100) * 0.2;
+  prosperity *= 1 + ((factorMap['media-freedom'] || 0) / 100) * 0.2;
+  prosperity *= 1 + ((factorMap['gender-equality'] || 0) / 100) * 0.2;
 
-  return Math.max(0, baseProsperity - penalties);
+  // Negative multiplicative factors - each point of factor reduces by a percentage
+  prosperity *= 1 - ((factorMap['corruption'] || 0) / 100) * 0.4;
+  prosperity *= 1 - ((factorMap['economic-inequality'] || 0) / 100) * 0.6;
+  prosperity *= 1 - ((factorMap['closed-society'] || 0) / 100) * 0.2;
+  prosperity *= 1 - ((factorMap['policing-deficiency'] || 0) / 100) * 0.3;
+  prosperity *= 1 - ((factorMap['housing-cost'] || 0) / 100) * 0.3;
+  prosperity *= 1 - ((factorMap['unemployment-rate'] || 0) / 100) * 0.6;
+  prosperity *= 1 - ((factorMap['domestic-war-risk'] || 0) / 100) * 0.3;
+  prosperity *= 1 - ((factorMap['currency-inflation'] || 0) / 100) * 0.3;
+  prosperity *= 1 - ((factorMap['public-health-crisis'] || 0) / 100) * 0.6; // Highest impact class
+
+  // Apply compounding crisis multiplier for pandemic + unemployment
+  const publicHealthCrisis = factorMap['public-health-crisis'] || 0;
+  const unemploymentRate = factorMap['unemployment-rate'] || 0;
+  if (publicHealthCrisis > 50 && unemploymentRate > 50) {
+    // Compounding effect - hits lower class hardest
+    const compoundingFactor =
+      (publicHealthCrisis + unemploymentRate - 100) / 200;
+    prosperity *= 1 - compoundingFactor * 0.6;
+  }
+
+  // Apply sigmoid to slow movement at extremes and clamp between 0-100
+  return Math.max(0, Math.min(100, sigmoidAdjust(prosperity)));
 };
 
 const calculateMiddleClassStability = (
   factorMap: Record<string, number>
 ): number => {
-  const baseStability =
-    (factorMap['domestic-manufacturing'] * 0.3 +
-      factorMap['research-development'] * 0.2 +
-      factorMap['infrastructure'] * 0.2 +
-      factorMap['education'] * 0.15 +
-      factorMap['healthcare'] * 0.15 +
-      factorMap['environmental-regulation'] * 0.1) /
-    100;
+  let stability = 50; // Start at base resilience
 
-  const penalties =
-    (factorMap['corruption'] * 0.3 + factorMap['economic-inequality'] * 0.4) /
-    100;
+  // Positive multiplicative factors
+  stability *= 1 + ((factorMap['domestic-manufacturing'] || 0) / 100) * 0.6;
+  stability *= 1 + ((factorMap['research-development'] || 0) / 100) * 0.4;
+  stability *= 1 + ((factorMap['infrastructure'] || 0) / 100) * 0.4;
+  stability *= 1 + ((factorMap['education'] || 0) / 100) * 0.3;
+  stability *= 1 + ((factorMap['healthcare'] || 0) / 100) * 0.3;
+  stability *= 1 + ((factorMap['environmental-regulation'] || 0) / 100) * 0.2;
+  stability *= 1 + ((factorMap['political-stability'] || 0) / 100) * 0.3;
+  stability *= 1 + ((factorMap['labor-rights'] || 0) / 100) * 0.2;
 
-  return Math.max(0, baseStability - penalties);
+  // Negative multiplicative factors
+  stability *= 1 - ((factorMap['corruption'] || 0) / 100) * 0.3;
+  stability *= 1 - ((factorMap['economic-inequality'] || 0) / 100) * 0.4;
+  stability *= 1 - ((factorMap['tax-rate'] || 0) / 100) * 0.24;
+  stability *= 1 - ((factorMap['closed-society'] || 0) / 100) * 0.2;
+  stability *= 1 - ((factorMap['policing-deficiency'] || 0) / 100) * 0.2;
+  stability *= 1 - ((factorMap['housing-cost'] || 0) / 100) * 0.2;
+  stability *= 1 - ((factorMap['unemployment-rate'] || 0) / 100) * 0.3;
+  stability *= 1 - ((factorMap['domestic-war-risk'] || 0) / 100) * 0.4;
+  stability *= 1 - ((factorMap['public-health-crisis'] || 0) / 100) * 0.4; // Moderate impact class
+
+  // Apply compounding crisis multiplier
+  const publicHealthCrisis = factorMap['public-health-crisis'] || 0;
+  const unemploymentRate = factorMap['unemployment-rate'] || 0;
+  if (publicHealthCrisis > 50 && unemploymentRate > 50) {
+    // Compounding effect - moderate impact on middle class
+    const compoundingFactor =
+      (publicHealthCrisis + unemploymentRate - 100) / 200;
+    stability *= 1 - compoundingFactor * 0.4;
+  }
+
+  // Apply sigmoid to slow movement at extremes and clamp between 0-100
+  return Math.max(0, Math.min(100, sigmoidAdjust(stability)));
 };
 
 const calculateUpperClassWealth = (
   factorMap: Record<string, number>
 ): number => {
-  const baseWealth =
-    (factorMap['domestic-manufacturing'] * 0.3 +
-      factorMap['research-development'] * 0.2 +
-      factorMap['technological-adoption'] * 0.2 +
-      factorMap['infrastructure'] * 0.1 +
-      factorMap['environmental-regulation'] * -0.1) /
-    100;
+  let wealth = 50; // Start at base resilience
 
-  const penalties =
-    (factorMap['corruption'] * 0.2 + factorMap['tax-rate'] * 0.4) / 100;
+  // Positive multiplicative factors
+  wealth *= 1 + ((factorMap['economic-inequality'] || 0) / 100) * 0.6;
+  wealth *= 1 + ((factorMap['domestic-manufacturing'] || 0) / 100) * 0.3;
+  wealth *= 1 + ((factorMap['research-development'] || 0) / 100) * 0.4;
+  wealth *= 1 + ((factorMap['technological-adoption'] || 0) / 100) * 0.4;
+  wealth *= 1 + ((factorMap['infrastructure'] || 0) / 100) * 0.2;
+  // Upper class benefits from corruption
+  wealth *= 1 + ((factorMap['corruption'] || 0) / 100) * 0.3;
+  // Some wealth from closed societies
+  wealth *= 1 + ((factorMap['closed-society'] || 0) / 100) * 0.2;
 
-  return Math.max(0, baseWealth - penalties);
+  // Negative multiplicative factors
+  wealth *= 1 - ((factorMap['tax-rate'] || 0) / 100) * 0.4;
+  wealth *= 1 - ((factorMap['environmental-regulation'] || 0) / 100) * 0.2;
+  wealth *= 1 - ((factorMap['labor-rights'] || 0) / 100) * 0.15;
+  wealth *= 1 - ((factorMap['domestic-war-risk'] || 0) / 100) * 0.3;
+  wealth *= 1 - ((factorMap['public-health-crisis'] || 0) / 100) * 0.2; // Lowest impact class
+
+  // Apply compounding crisis multiplier
+  const publicHealthCrisis = factorMap['public-health-crisis'] || 0;
+  const unemploymentRate = factorMap['unemployment-rate'] || 0;
+  if (publicHealthCrisis > 50 && unemploymentRate > 50) {
+    // Compounding effect - least impact on upper class
+    const compoundingFactor =
+      (publicHealthCrisis + unemploymentRate - 100) / 200;
+    wealth *= 1 - compoundingFactor * 0.2;
+  }
+
+  // Apply sigmoid to slow movement at extremes and clamp between 0-100
+  return Math.max(0, Math.min(100, sigmoidAdjust(wealth)));
 };
 
 // Calculate overall success rate
@@ -1030,28 +1163,51 @@ const calculateSuccessRate = (
       ? (factorMap['policing-deficiency'] - 50) * 0.6
       : 0);
 
+  // Pandemic penalty - direct influence on success rate
+  const pandemicPenalty =
+    (factorMap['public-health-crisis'] || 0) > 50
+      ? (factorMap['public-health-crisis'] - 50) * 0.6
+      : 0;
+
   // Inequality penalty - scales with economic inequality and class disparity
   const inequalityPenalty =
     (factorMap['economic-inequality'] > 50
       ? (factorMap['economic-inequality'] - 50) * 0.6
       : 0) + (maxDisparity > 40 ? (maxDisparity - 40) * 0.8 : 0);
 
-  // Total all penalties
-  const totalPenalties = Math.min(
-    90, // Cap total penalties at 90 to allow for minimum 10% success rate
+  // Calculate raw uncapped total penalties to detect tipping points
+  const rawTotalPenalties =
     extremeInequalityPenalty +
-      failedStatePenalty +
-      totalLowClassPenalty +
-      factorPenalties +
-      inequalityPenalty
+    failedStatePenalty +
+    totalLowClassPenalty +
+    factorPenalties +
+    pandemicPenalty +
+    inequalityPenalty;
+
+  // Tipping Point Collapse Multiplier - simulates cascading crises in extreme scenarios
+  // Only applies when raw penalties exceed the tipping threshold
+  const tippingPointThreshold = 150;
+  const collapseMultiplier =
+    rawTotalPenalties > tippingPointThreshold
+      ? Math.min(2, 1 + (rawTotalPenalties - tippingPointThreshold) / 50)
+      : 1;
+
+  // Total capped penalties (with collapse multiplier applied)
+  const totalPenalties = Math.min(
+    90 * collapseMultiplier, // Allows penalties to exceed 90 in extreme cases
+    rawTotalPenalties
   );
 
-  // Scaling factor - more aggressive scaling
-  const scalingFactor = Math.max(0.3, 1 - totalPenalties / 100);
+  // Scaling factor - more aggressive scaling in collapse scenarios with NO FLOOR
+  // This allows truly catastrophic scenarios to reach 0% success
+  const scalingFactor = Math.max(
+    0, // No minimum - can reach 0 in extreme cases
+    1 - totalPenalties / 100
+  );
 
   // Bonuses only apply if not in failed state and inequality isn't extreme
   const isFailedState =
-    Math.min(lowerClassProsperity, middleClassStability) < 20;
+    Math.min(lowerClassProsperity, middleClassStability) < 15; // Reduced threshold
   const hasExtremeInequality = factorMap['economic-inequality'] > 70;
 
   // Social cohesion bonus - only applies in healthy states
@@ -1066,14 +1222,21 @@ const calculateSuccessRate = (
       ? Math.min(15, (25 - maxDisparity) * 0.6)
       : 0;
 
-  // Calculate final success rate
-  return Math.max(
-    0,
-    Math.min(
-      100,
-      baseSuccess * scalingFactor +
-        (socialCohesionBonus + balanceBonus) -
-        totalPenalties
-    )
-  );
+  // For extremely low class prosperity, apply steep sigmoid penalty
+  // to simulate the collapse of society
+  let finalRate =
+    baseSuccess * scalingFactor +
+    (socialCohesionBonus + balanceBonus) -
+    totalPenalties;
+
+  // If both lower and middle class are extremely low, apply additional
+  // sigmoid penalty to quickly approach 0
+  if (lowerClassProsperity < 10 && middleClassStability < 10) {
+    const collapseFactor =
+      1 - Math.min(1, (lowerClassProsperity + middleClassStability) / 20);
+    finalRate *= 1 - collapseFactor * 0.9; // Almost complete reduction for true collapse
+  }
+
+  // Calculate final success rate (can now go to 0% in extreme collapse scenarios)
+  return Math.max(0, Math.min(100, finalRate));
 };
