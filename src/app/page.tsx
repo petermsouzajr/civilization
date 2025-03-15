@@ -266,7 +266,7 @@ export default function Home() {
                     className="space-y-1 rounded-2xl p-2 border border-gray-400 dark:border-gray-600"
                   >
                     <div className="flex justify-between">
-                      <span className="text-base font-bold text-gray-900 dark:text-gray-100">
+                      <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
                         {factor.name}
                       </span>
                       <span className="text-base text-gray-700 dark:text-gray-300">
@@ -284,7 +284,7 @@ export default function Home() {
                       }
                       className="[&_[role=slider]]:bg-gray-900 dark:[&_[role=slider]]:bg-gray-300"
                     />
-                    <p className="text-base text-gray-700 dark:text-gray-300">
+                    <p className="font-bold pl-6 text-gray-700 dark:text-gray-300">
                       {factor.description}
                     </p>
                   </div>
