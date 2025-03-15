@@ -9,6 +9,12 @@ import { DEFAULT_FACTORS, SocietalFactor } from '@/types/simulation';
 import { calculateOutcomes } from '@/lib/simulation';
 import { PRESETS, Preset } from '@/types/presets';
 import { cn } from '@/lib/utils';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 const PRESET_COLORS = {
   'Balanced Society':
@@ -258,19 +264,32 @@ export default function Home() {
                   </h3>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {PRESETS.slice(0, 12).map((preset) => (
-                      <Button
-                        key={preset.name}
-                        variant="outline"
-                        className={cn(
-                          'w-full text-base transition-colors',
-                          PRESET_COLORS[
-                            preset.name as keyof typeof PRESET_COLORS
-                          ]
-                        )}
-                        onClick={() => applyPreset(preset)}
-                      >
-                        {preset.name}
-                      </Button>
+                      <TooltipProvider key={preset.name}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                'w-full text-base transition-colors',
+                                PRESET_COLORS[
+                                  preset.name as keyof typeof PRESET_COLORS
+                                ]
+                              )}
+                              onClick={() => applyPreset(preset)}
+                            >
+                              {preset.name}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium">{preset.description}</p>
+                            {preset.historicalOutcome && (
+                              <p className="mt-2 text-sm text-gray-300">
+                                {preset.historicalOutcome}
+                              </p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     ))}
                   </div>
                 </div>
@@ -280,19 +299,32 @@ export default function Home() {
                   </h3>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                     {PRESETS.slice(12).map((preset) => (
-                      <Button
-                        key={preset.name}
-                        variant="outline"
-                        className={cn(
-                          'w-full text-base transition-colors',
-                          PRESET_COLORS[
-                            preset.name as keyof typeof PRESET_COLORS
-                          ]
-                        )}
-                        onClick={() => applyPreset(preset)}
-                      >
-                        {preset.name}
-                      </Button>
+                      <TooltipProvider key={preset.name}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                'w-full text-base transition-colors',
+                                PRESET_COLORS[
+                                  preset.name as keyof typeof PRESET_COLORS
+                                ]
+                              )}
+                              onClick={() => applyPreset(preset)}
+                            >
+                              {preset.name}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium">{preset.description}</p>
+                            {preset.historicalOutcome && (
+                              <p className="mt-2 text-sm text-gray-300">
+                                {preset.historicalOutcome}
+                              </p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     ))}
                   </div>
                 </div>

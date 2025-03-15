@@ -214,8 +214,9 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
             (factorMap.get('self-defense-freedom') || 0) * 0.05 +
             (factorMap.get('tax-rate') || 0) * 0.05 +
             (factorMap.get('economic-inequality') || 0) * -0.15 +
-            (factorMap.get('policing-deficiency') || 0) * -0.15 + // New factor
-            (factorMap.get('housing-cost') || 0) * -0.15 // New factor
+            (factorMap.get('policing-deficiency') || 0) * -0.15 +
+            (factorMap.get('housing-cost') || 0) * -0.15 +
+            (factorMap.get('unemployment-rate') || 0) * -0.3
         ) +
         healthEducationSynergy * 0.5 +
         infrastructureHealthSynergy * 0.5 +
@@ -237,22 +238,23 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
 
   const middleClassStability = applyStormThreshold(
     normalizeValue(
-      40 + // Base resilience
+      45 + // Base resilience
         capNegativeContributions(
-          (factorMap.get('tax-rate') || 0) * -0.15 +
-            (factorMap.get('economic-inequality') || 0) * -0.15 +
+          (factorMap.get('tax-rate') || 0) * -0.12 +
+            (factorMap.get('economic-inequality') || 0) * -0.12 +
             (factorMap.get('research-development') || 0) * 0.15 +
-            (factorMap.get('infrastructure') || 0) * 0.1 +
-            (factorMap.get('education') || 0) * 0.1 +
-            (factorMap.get('corruption') || 0) * -0.15 +
+            (factorMap.get('infrastructure') || 0) * 0.12 +
+            (factorMap.get('education') || 0) * 0.12 +
+            (factorMap.get('corruption') || 0) * -0.12 +
             (factorMap.get('closed-society') || 0) * -0.1 +
             (factorMap.get('environmental-protection') || 0) * 0.1 +
             (factorMap.get('media-freedom') || 0) * 0.1 +
             (factorMap.get('gender-equality') || 0) * 0.1 +
             (factorMap.get('religious-influence') || 0) * 0.1 +
             (factorMap.get('self-defense-freedom') || 0) * 0.05 +
-            (factorMap.get('policing-deficiency') || 0) * -0.1 + // New factor
-            (factorMap.get('housing-cost') || 0) * -0.1 // New factor
+            (factorMap.get('policing-deficiency') || 0) * -0.1 +
+            (factorMap.get('housing-cost') || 0) * -0.1 +
+            (factorMap.get('unemployment-rate') || 0) * -0.15
         ) +
         healthEducationSynergy * 0.5 +
         infrastructureHealthSynergy * 0.5 +
@@ -288,8 +290,12 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
             (factorMap.get('religious-influence') || 0) * 0.1 +
             (factorMap.get('self-defense-freedom') || 0) * 0.15 +
             (factorMap.get('tax-rate') || 0) * -0.15 +
-            (factorMap.get('policing-deficiency') || 0) * -0.05 + // New factor
-            (factorMap.get('housing-cost') || 0) * 0.1 // New factor - positive for upper class up to 70
+            (factorMap.get('policing-deficiency') || 0) * -0.05 +
+            (factorMap.get('housing-cost') || 0) * 0.1 +
+            (factorMap.get('unemployment-rate') || 0) >
+            70
+            ? ((factorMap.get('unemployment-rate') || 0) - 70) * -0.05
+            : 0
         ) +
         techResearchSynergy * 0.5 +
         religiousCohesionSynergy * 0.5 +
@@ -450,10 +456,25 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
       ? Math.min(5, ((factorMap.get('government-aid') || 0) - 50) * 0.1)
       : 0;
 
+  // Add unemployment crisis state
+  if ((factorMap.get('unemployment-rate') || 0) > 80) {
+    currentState = 'Mass Unemployment Crisis';
+  }
+
+  // Add unemployment-government aid synergy
+  const unemploymentAidSynergy =
+    (factorMap.get('unemployment-rate') || 0) > 50 &&
+    (factorMap.get('government-aid') || 0) > 50
+      ? Math.min(5, ((factorMap.get('government-aid') || 0) - 50) * 0.1)
+      : 0;
+
   // Apply synergies to lower class prosperity
   lowerClassProsperity = applyStormThreshold(
     normalizeValue(
-      lowerClassProsperity - policingInequalitySynergy + housingAidSynergy
+      lowerClassProsperity -
+        policingInequalitySynergy +
+        housingAidSynergy +
+        unemploymentAidSynergy
     ),
     totalPenalties
   );
