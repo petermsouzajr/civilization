@@ -5,8 +5,12 @@
       "destination": "https://civilization-[YOUR-PROJECT-NAME].vercel.app/:path*"
     }
   ],
-  "buildCommand": "next build",
-  "ignoreCommand": "next lint --no-cache",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next"
+    }
+  ],
   "env": {
     "NEXT_LINT_DURING_BUILD": "false"
   }
