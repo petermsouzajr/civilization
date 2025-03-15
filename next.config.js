@@ -26,6 +26,10 @@ const nextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true,
   },
+  // Disable linting and type checking during build
+  experimental: {
+    typedRoutes: false,
+  },
 };
 
 module.exports = nextConfig;

@@ -1,17 +1,11 @@
 {
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "out",
   "rewrites": [
     {
       "source": "/civilization/:path*",
-      "destination": "https://civilization-[YOUR-PROJECT-NAME].vercel.app/:path*"
+      "destination": "/civilization/:path*"
     }
-  ],
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/next"
-    }
-  ],
-  "env": {
-    "NEXT_LINT_DURING_BUILD": "false"
-  }
+  ]
 }
