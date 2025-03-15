@@ -377,14 +377,24 @@ export default function Home() {
 
         {/* Right Column - Title and Simulation Results */}
         <div className="flex flex-col gap-6 min-h-0">
-          <h1 className="text-4xl font-bold text-center text-gray-100 dark:text-gray-50">
+          {/* <h1 className="text-4xl font-bold text-center text-gray-100 dark:text-gray-50">
             Civilization Simulation
-          </h1>
+          </h1> */}
           <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
             <CardHeader className="shrink-0">
-              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
-                Simulation Results
-              </CardTitle>
+              <div
+                className={cn(
+                  'p-4 rounded-lg transition-all duration-400 ease-in-out',
+                  getStatusColor(simulationState.currentState)
+                )}
+              >
+                <p className="text-center text-2xl font-medium text-gray-900">
+                  <span className="font-bold text-left text-gray-900 dark:text-gray-100">
+                    Simulation Results:{' '}
+                  </span>
+                  {simulationState.currentState}
+                </p>
+              </div>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Success Metrics */}
@@ -476,21 +486,6 @@ export default function Home() {
               </div>
 
               {/* Current State */}
-              <div className="space-y-2">
-                <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 text-center">
-                  Current State
-                </h3>
-                <div
-                  className={cn(
-                    'p-4 rounded-lg transition-all duration-400 ease-in-out',
-                    getStatusColor(simulationState.currentState)
-                  )}
-                >
-                  <p className="text-center text-lg font-medium text-gray-900">
-                    {simulationState.currentState}
-                  </p>
-                </div>
-              </div>
 
               {/* Events */}
               {simulationState.events.length > 0 && (

@@ -130,6 +130,13 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     category: 'Social',
   },
   {
+    id: 'political-stability',
+    name: 'Political Stability',
+    value: 50,
+    description: 'Overall stability of governance and political institutions',
+    category: 'Social',
+  },
+  {
     id: 'social-cohesion',
     name: 'Social Cohesion',
     value: 0,
@@ -141,6 +148,13 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
     name: 'Gender Equality',
     value: 0,
     description: 'Level of gender equality in society',
+    category: 'Social',
+  },
+  {
+    id: 'labor-rights',
+    name: 'Labor Rights',
+    value: 30,
+    description: 'Level of worker protections and union strength',
     category: 'Social',
   },
   {

@@ -137,6 +137,36 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
       100) *
       0.1
   );
+
+  // Add new synergies for political stability and labor rights
+  const politicalStabilitySynergy = Math.min(
+    10,
+    (((factorMap.get('political-stability') || 0) *
+      (factorMap.get('social-cohesion') || 0)) /
+      100) *
+      0.1
+  );
+  const laborRightsSynergy = Math.min(
+    10,
+    (((factorMap.get('labor-rights') || 0) *
+      (factorMap.get('economic-inequality') || 0)) /
+      100) *
+      0.1
+  );
+
+  // Calculate political stability effects
+  const politicalStabilityEffect = Math.min(
+    15,
+    (factorMap.get('political-stability') || 0) / 6.67
+  );
+
+  // Calculate labor rights effects
+  const laborRightsEffect = Math.min(
+    15,
+    (factorMap.get('labor-rights') || 0) / 6.67
+  );
+
+  // Calculate education inequality penalty with capped impact
   const educationInequalityPenalty =
     (factorMap.get('economic-inequality') || 0) > 70
       ? Math.min(10, (factorMap.get('economic-inequality') || 0) / 10)
@@ -216,11 +246,15 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
             (factorMap.get('economic-inequality') || 0) * -0.15 +
             (factorMap.get('policing-deficiency') || 0) * -0.15 +
             (factorMap.get('housing-cost') || 0) * -0.15 +
-            (factorMap.get('unemployment-rate') || 0) * -0.3
+            (factorMap.get('unemployment-rate') || 0) * -0.3 +
+            (factorMap.get('political-stability') || 0) * 0.1 +
+            (factorMap.get('labor-rights') || 0) * 0.15
         ) +
         healthEducationSynergy * 0.5 +
         infrastructureHealthSynergy * 0.5 +
-        genderEducationSynergy * 0.5 -
+        genderEducationSynergy * 0.5 +
+        politicalStabilitySynergy * 0.5 +
+        laborRightsSynergy * 0.5 -
         educationInequalityPenalty -
         inflationEffect * 0.2 -
         energyCostEffect * 0.15 -
@@ -254,12 +288,16 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
             (factorMap.get('self-defense-freedom') || 0) * 0.05 +
             (factorMap.get('policing-deficiency') || 0) * -0.1 +
             (factorMap.get('housing-cost') || 0) * -0.1 +
-            (factorMap.get('unemployment-rate') || 0) * -0.15
+            (factorMap.get('unemployment-rate') || 0) * -0.15 +
+            (factorMap.get('political-stability') || 0) * 0.15 +
+            (factorMap.get('labor-rights') || 0) * 0.1
         ) +
         healthEducationSynergy * 0.5 +
         infrastructureHealthSynergy * 0.5 +
         religiousCohesionSynergy * 0.5 +
-        mediaCohesionSynergy * 0.5 -
+        mediaCohesionSynergy * 0.5 +
+        politicalStabilitySynergy * 0.5 +
+        laborRightsSynergy * 0.5 -
         inflationEffect * 0.15 -
         energyCostEffect * 0.15 -
         automationEffect * 0.1 -
@@ -292,6 +330,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
             (factorMap.get('tax-rate') || 0) * -0.15 +
             (factorMap.get('policing-deficiency') || 0) * -0.05 +
             (factorMap.get('housing-cost') || 0) * 0.1 +
+            (factorMap.get('political-stability') || 0) * 0.05 +
+            (factorMap.get('labor-rights') || 0) * -0.05 +
             (factorMap.get('unemployment-rate') || 0) >
             70
             ? ((factorMap.get('unemployment-rate') || 0) - 70) * -0.05
@@ -300,6 +340,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         techResearchSynergy * 0.5 +
         religiousCohesionSynergy * 0.5 +
         infrastructureHealthSynergy * 0.5 +
+        politicalStabilitySynergy * 0.5 +
+        laborRightsSynergy * 0.5 +
         inflationEffect * 0.15 +
         energyCostEffect * 0.1 +
         automationEffect * 0.15 +
@@ -441,6 +483,24 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   }
   if ((factorMap.get('housing-cost') || 0) > 80) {
     currentState = 'Housing Collapse';
+  }
+  if ((factorMap.get('political-stability') || 0) < 20) {
+    currentState = 'Political Instability Crisis';
+  }
+  if ((factorMap.get('labor-rights') || 0) < 20) {
+    currentState = 'Labor Rights Crisis';
+  }
+  if (
+    (factorMap.get('political-stability') || 0) < 30 &&
+    (factorMap.get('domestic-war-risk') || 0) > 70
+  ) {
+    currentState = 'Civil War Risk';
+  }
+  if (
+    (factorMap.get('labor-rights') || 0) > 50 &&
+    (factorMap.get('economic-inequality') || 0) < 50
+  ) {
+    currentState = 'Labor Rights Success';
   }
 
   // Add new synergies
