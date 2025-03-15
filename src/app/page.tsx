@@ -250,87 +250,6 @@ export default function Home() {
         {/* Left Column - Scenarios and Societal Factors */}
         <div className="flex flex-col gap-6 min-h-0">
           {/* Scenarios Card */}
-          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex-1 flex flex-col min-h-0">
-            <CardHeader className="shrink-0">
-              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
-                Scenarios
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 overflow-y-auto min-h-0">
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
-                    Basic Scenarios
-                  </h3>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {PRESETS.slice(0, 12).map((preset) => (
-                      <TooltipProvider key={preset.name}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                'w-full text-base transition-colors',
-                                PRESET_COLORS[
-                                  preset.name as keyof typeof PRESET_COLORS
-                                ]
-                              )}
-                              onClick={() => applyPreset(preset)}
-                            >
-                              {preset.name}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="font-medium">{preset.description}</p>
-                            {preset.historicalOutcome && (
-                              <p className="mt-2 text-sm text-gray-300">
-                                {preset.historicalOutcome}
-                              </p>
-                            )}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
-                    Historical Scenarios
-                  </h3>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                    {PRESETS.slice(12).map((preset) => (
-                      <TooltipProvider key={preset.name}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                'w-full text-base transition-colors',
-                                PRESET_COLORS[
-                                  preset.name as keyof typeof PRESET_COLORS
-                                ]
-                              )}
-                              onClick={() => applyPreset(preset)}
-                            >
-                              {preset.name}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="font-medium">{preset.description}</p>
-                            {preset.historicalOutcome && (
-                              <p className="mt-2 text-sm text-gray-300">
-                                {preset.historicalOutcome}
-                              </p>
-                            )}
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Societal Factors Card */}
           <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex-1 flex flex-col min-h-0">
@@ -375,11 +294,8 @@ export default function Home() {
           </Card>
         </div>
 
-        {/* Right Column - Title and Simulation Results */}
+        {/* Right Column - Simulation Results */}
         <div className="flex flex-col gap-6 min-h-0">
-          {/* <h1 className="text-4xl font-bold text-center text-gray-100 dark:text-gray-50">
-            Civilization Simulation
-          </h1> */}
           <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
             <CardHeader className="shrink-0">
               <div
@@ -505,6 +421,87 @@ export default function Home() {
                   </ul>
                 </div>
               )}
+            </CardContent>
+          </Card>
+          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex-1 flex flex-col min-h-0">
+            <CardHeader className="shrink-0">
+              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+                Scenarios
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-y-auto min-h-0">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                    Basic Scenarios
+                  </h3>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {PRESETS.slice(0, 12).map((preset) => (
+                      <TooltipProvider key={preset.name}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                'w-full text-base transition-colors',
+                                PRESET_COLORS[
+                                  preset.name as keyof typeof PRESET_COLORS
+                                ]
+                              )}
+                              onClick={() => applyPreset(preset)}
+                            >
+                              {preset.name}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium">{preset.description}</p>
+                            {preset.historicalOutcome && (
+                              <p className="mt-2 text-sm text-gray-300">
+                                {preset.historicalOutcome}
+                              </p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                    Historical Scenarios
+                  </h3>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {PRESETS.slice(12).map((preset) => (
+                      <TooltipProvider key={preset.name}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                'w-full text-base transition-colors',
+                                PRESET_COLORS[
+                                  preset.name as keyof typeof PRESET_COLORS
+                                ]
+                              )}
+                              onClick={() => applyPreset(preset)}
+                            >
+                              {preset.name}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium">{preset.description}</p>
+                            {preset.historicalOutcome && (
+                              <p className="mt-2 text-sm text-gray-300">
+                                {preset.historicalOutcome}
+                              </p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
