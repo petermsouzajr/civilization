@@ -6,8 +6,7 @@ const nextConfig = {
   // - Unused variables in simulation.ts and tests
   // - useEffect dependencies in page.tsx
   // - Explicit 'any' types in simulation.ts
-  // output: 'export',
-  // distDir: 'out',
+  output: 'standalone',
   images: {
     unoptimized: true,
   },
