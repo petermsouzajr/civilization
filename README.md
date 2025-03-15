@@ -1,36 +1,176 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Civilization Simulator
 
-## Getting Started
+A sophisticated simulation tool that models societal health and stability through the lens of class dynamics, economic factors, and social conditions. This project provides an interactive way to explore how various factors influence a society's overall success and stability.
 
-First, run the development server:
+## Overview
+
+The simulator calculates a society's success rate based on the complex interplay between three main classes (lower, middle, and upper) and numerous societal factors. It employs a nuanced algorithm that considers:
+
+- Class prosperity and distribution
+- Economic indicators
+- Social cohesion
+- Government effectiveness
+- Environmental factors
+- Infrastructure quality
+- And more...
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js 18.x or higher
+- npm or yarn package manager
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/civilization-simulator.git
+cd civilization-simulator
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Start the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Development Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` - Start development server
+- `npm run build` - Build production version
+- `npm run start` - Start production server
+- `npm run lint` - Run linting
+- `npm run test` - Run tests (when implemented)
 
-## Learn More
+## Key Features
 
-To learn more about Next.js, take a look at the following resources:
+### Class Dynamics
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Lower Class Prosperity (45% weight) - Represents basic needs and survival
+- Middle Class Stability (40% weight) - Represents economic engine
+- Upper Class Wealth (15% weight) - Represents investment capacity
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Success Rate Calculation
 
-## Deploy on Vercel
+The simulation uses a sophisticated algorithm that considers:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Base Success**: Weighted combination of class prosperities
+2. **Penalty Factors**:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   - Extreme inequality penalties
+   - Failed state conditions
+   - Low class penalties
+   - Factor-specific penalties (corruption, unemployment, etc.)
+   - Economic inequality impact
+
+3. **Bonus Factors**:
+   - Social cohesion
+   - Class balance
+   - Positive synergies between factors
+
+### State Assessment
+
+The simulator determines various societal states including:
+
+- Moderately Stable Society
+- Lower Class Poverty Crisis
+- Middle Class Economic Instability
+- Upper Class Wealth Decline
+- Widespread Government Corruption
+- Severe Social Fragmentation
+- Extreme Economic Inequality
+
+### Fantasy Elements
+
+For added entertainment value, the simulator includes optional fantasy scenarios:
+
+- Mana Storms
+- Thanos Snap Events
+- Godzilla Rampages
+- Joker Chaos
+- Graphene Technology Revolution
+
+## How It Works
+
+The simulation processes various input factors through multiple stages:
+
+1. **Base Calculations**:
+
+   - Computes prosperity for each class
+   - Applies factor effects and synergies
+   - Calculates penalties and bonuses
+
+2. **Adjustments**:
+
+   - Applies scaling factors
+   - Implements minimum thresholds
+   - Caps maximum penalties
+
+3. **Final Output**:
+   - Success rate (0-100%)
+   - Class prosperity levels
+   - Current state assessment
+   - Notable events
+
+## Real-World Applications
+
+The simulator can model various real-world scenarios:
+
+- Economic inequality impacts
+- Failed state conditions
+- Social mobility effects
+- Policy change outcomes
+- Crisis response effectiveness
+
+## Technical Details
+
+The simulation uses:
+
+- TypeScript for type safety
+- Modern JavaScript features
+- Complex mathematical models
+- Event generation system
+- State determination logic
+
+## Limitations
+
+The simulator acknowledges certain limitations:
+
+- Simplified model of complex real-world dynamics
+- Focus on specific aspects of society
+- Abstraction of many detailed factors
+- Idealized interactions between factors
+
+## Future Enhancements
+
+Planned improvements include:
+
+- More sophisticated economic models
+- Additional societal factors
+- Enhanced historical scenarios
+- Improved visualization tools
+- Time-based progression
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit pull requests or open issues for:
+
+- Bug fixes
+- New features
+- Documentation improvements
+- Additional scenarios
+- Algorithm refinements
