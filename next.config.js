@@ -7,6 +7,7 @@ const nextConfig = {
   // - useEffect dependencies in page.tsx
   // - Explicit 'any' types in simulation.ts
   output: 'export',
+  distDir: 'out',
   images: {
     unoptimized: true,
   },
