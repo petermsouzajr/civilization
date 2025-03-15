@@ -30,7 +30,7 @@ const nextConfig = {
     typedRoutes: false,
   },
   basePath: '/civilization',
-  output: 'export',
+  // output: 'export',
 };
 
 module.exports = nextConfig;
