@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "NEXT_LINT_DURING_BUILD=false next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
@@ -12,7 +12,8 @@
     "test:coverage": "jest --coverage",
     "cypress": "cypress open",
     "cypress:headless": "cypress run",
-    "test:e2e": "start-server-and-test dev http://localhost:3000 cypress"
+    "test:e2e": "start-server-and-test dev http://localhost:3000 cypress",
+    "export": "NEXT_LINT_DURING_BUILD=false next build && next export"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.2",

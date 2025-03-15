@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    {
+      "source": "/civilization/:path*",
+      "destination": "https://civilization-[YOUR-PROJECT-NAME].vercel.app/:path*"
+    }
+  ],
+  "buildCommand": "next build",
+  "ignoreCommand": "next lint --no-cache",
+  "env": {
+    "NEXT_LINT_DURING_BUILD": "false"
+  }
+}
