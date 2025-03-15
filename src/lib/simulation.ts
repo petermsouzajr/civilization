@@ -35,10 +35,10 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   const graduatedPenalty = (
     value: number,
     threshold: number,
-    multiplier = 0.3
-  ) => {
+    multiplier = 0.5
+  ): number => {
     return value > threshold
-      ? Math.min(15, (value - threshold) * multiplier)
+      ? Math.min(20, (value - threshold) * multiplier)
       : 0;
   };
 
@@ -967,19 +967,113 @@ const calculateSuccessRate = (
   upperClassWealth: number,
   factorMap: Record<string, number>
 ): number => {
-  const classBalance =
-    lowerClassProsperity * 0.4 +
-    middleClassStability * 0.4 +
-    upperClassWealth * 0.2;
+  // Calculate the disparity between classes
+  const maxDisparity = Math.max(
+    Math.abs(upperClassWealth - lowerClassProsperity),
+    Math.abs(upperClassWealth - middleClassStability),
+    Math.abs(middleClassStability - lowerClassProsperity)
+  );
 
-  const socialCohesionBonus = factorMap['social-cohesion'] / 100;
-  const inequalityPenalty = factorMap['economic-inequality'] / 100;
+  // Calculate average prosperity of lower and middle classes
+  const averageLowerMiddle = (lowerClassProsperity + middleClassStability) / 2;
 
+  // Base success calculation heavily weighted towards lower and middle class wellbeing
+  const baseSuccess =
+    lowerClassProsperity * 0.45 + // 45% weight - survival and basic needs
+    middleClassStability * 0.4 + // 40% weight - economic engine
+    upperClassWealth * 0.15; // 15% weight - investment capacity
+
+  // Extreme inequality penalty - severe penalty when upper class hoards wealth
+  const extremeInequalityPenalty =
+    upperClassWealth > 70 && averageLowerMiddle < 40
+      ? Math.min(
+          70, // Cap at 70 points
+          (upperClassWealth - 70) * 2 + // Penalty for excess upper class wealth
+            (40 - averageLowerMiddle) * 1.5 // Additional penalty for poor lower/middle class conditions
+        )
+      : 0;
+
+  // Failed state penalty - triggers when lower or middle class is extremely low
+  const failedStatePenalty =
+    Math.min(lowerClassProsperity, middleClassStability) < 20
+      ? Math.min(
+          40, // Cap at 40 points
+          (20 - Math.min(lowerClassProsperity, middleClassStability)) * 2
+        )
+      : 0;
+
+  // Low class penalty - penalize any class below 30%
+  const lowClassPenalty = (classValue: number) =>
+    classValue < 30 ? (30 - classValue) * 2.5 : 0;
+
+  const totalLowClassPenalty =
+    lowClassPenalty(lowerClassProsperity) * 1.5 + // Higher multiplier for lower class
+    lowClassPenalty(middleClassStability) +
+    lowClassPenalty(upperClassWealth) * 0.5; // Lower multiplier for upper class
+
+  // Calculate factor penalties with higher weights
+  const factorPenalties =
+    (factorMap['corruption'] > 50 ? (factorMap['corruption'] - 50) * 0.8 : 0) +
+    (factorMap['unemployment-rate'] > 40
+      ? (factorMap['unemployment-rate'] - 40) * 0.8
+      : 0) +
+    (factorMap['housing-cost'] > 60
+      ? (factorMap['housing-cost'] - 60) * 0.6
+      : 0) +
+    (factorMap['domestic-war-risk'] > 30
+      ? (factorMap['domestic-war-risk'] - 30) * 0.8
+      : 0) +
+    (factorMap['currency-inflation'] > 40
+      ? (factorMap['currency-inflation'] - 40) * 0.7
+      : 0) +
+    (factorMap['policing-deficiency'] > 50
+      ? (factorMap['policing-deficiency'] - 50) * 0.6
+      : 0);
+
+  // Inequality penalty - scales with economic inequality and class disparity
+  const inequalityPenalty =
+    (factorMap['economic-inequality'] > 50
+      ? (factorMap['economic-inequality'] - 50) * 0.6
+      : 0) + (maxDisparity > 40 ? (maxDisparity - 40) * 0.8 : 0);
+
+  // Total all penalties
+  const totalPenalties = Math.min(
+    90, // Cap total penalties at 90 to allow for minimum 10% success rate
+    extremeInequalityPenalty +
+      failedStatePenalty +
+      totalLowClassPenalty +
+      factorPenalties +
+      inequalityPenalty
+  );
+
+  // Scaling factor - more aggressive scaling
+  const scalingFactor = Math.max(0.3, 1 - totalPenalties / 100);
+
+  // Bonuses only apply if not in failed state and inequality isn't extreme
+  const isFailedState =
+    Math.min(lowerClassProsperity, middleClassStability) < 20;
+  const hasExtremeInequality = factorMap['economic-inequality'] > 70;
+
+  // Social cohesion bonus - only applies in healthy states
+  const socialCohesionBonus =
+    !isFailedState && !hasExtremeInequality
+      ? Math.min(10, (factorMap['social-cohesion'] || 0) * 0.1)
+      : 0;
+
+  // Balance bonus - rewards classes within 25% of each other
+  const balanceBonus =
+    !isFailedState && maxDisparity < 25
+      ? Math.min(15, (25 - maxDisparity) * 0.6)
+      : 0;
+
+  // Calculate final success rate
   return Math.max(
     0,
     Math.min(
       100,
-      classBalance * 100 + socialCohesionBonus * 20 - inequalityPenalty * 30
+      baseSuccess * scalingFactor +
+        (socialCohesionBonus + balanceBonus) -
+        totalPenalties
     )
   );
 };
