@@ -232,12 +232,11 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         (factorMap.get('government-aid') || 0) * 0.3 * corruptionFactor +
         (factorMap.get('healthcare') || 0) * 0.15 +
         (factorMap.get('education') || 0) * 0.15 +
-        (factorMap.get('infrastructure') || 0) * 0.1 +
-        (factorMap.get('domestic-manufacturing') || 0) * 0.1 +
+        (factorMap.get('infrastructure') || 0) * 0.15 +
+        (factorMap.get('environmental-regulation') || 0) * 0.15 +
         capNegativeContributions(
           (factorMap.get('corruption') || 0) * -0.15 +
             (factorMap.get('closed-society') || 0) * -0.1 +
-            (factorMap.get('environmental-protection') || 0) * 0.15 +
             (factorMap.get('media-freedom') || 0) * 0.1 +
             (factorMap.get('gender-equality') || 0) * 0.1 +
             (factorMap.get('religious-influence') || 0) * 0.1 +
@@ -281,7 +280,7 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
             (factorMap.get('education') || 0) * 0.12 +
             (factorMap.get('corruption') || 0) * -0.12 +
             (factorMap.get('closed-society') || 0) * -0.1 +
-            (factorMap.get('environmental-protection') || 0) * 0.1 +
+            (factorMap.get('environmental-regulation') || 0) * 0.1 +
             (factorMap.get('media-freedom') || 0) * 0.1 +
             (factorMap.get('gender-equality') || 0) * 0.1 +
             (factorMap.get('religious-influence') || 0) * 0.1 +
@@ -319,10 +318,11 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         (factorMap.get('corruption') || 0) * 0.15 +
         (factorMap.get('research-development') || 0) * 0.15 +
         (factorMap.get('infrastructure') || 0) * 0.1 +
+        (factorMap.get('environmental-regulation') || 0) * -0.1 +
         (factorMap.get('domestic-manufacturing') || 0) * 0.15 +
         (factorMap.get('closed-society') || 0) * 0.1 +
         capNegativeContributions(
-          (factorMap.get('environmental-protection') || 0) * -0.1 +
+          (factorMap.get('environmental-regulation') || 0) * -0.1 +
             (factorMap.get('media-freedom') || 0) * -0.1 +
             (factorMap.get('gender-equality') || 0) * -0.05 +
             (factorMap.get('religious-influence') || 0) * 0.1 +
@@ -801,7 +801,7 @@ const calculateLowerClassProsperity = (
       factorMap['healthcare'] * 0.2 +
       factorMap['education'] * 0.2 +
       factorMap['infrastructure'] * 0.15 +
-      factorMap['media-freedom'] * 0.15) /
+      factorMap['environmental-regulation'] * 0.15) /
     100;
 
   const penalties =
@@ -819,7 +819,8 @@ const calculateMiddleClassStability = (
       factorMap['research-development'] * 0.2 +
       factorMap['infrastructure'] * 0.2 +
       factorMap['education'] * 0.15 +
-      factorMap['healthcare'] * 0.15) /
+      factorMap['healthcare'] * 0.15 +
+      factorMap['environmental-regulation'] * 0.1) /
     100;
 
   const penalties =
@@ -836,8 +837,8 @@ const calculateUpperClassWealth = (
     (factorMap['domestic-manufacturing'] * 0.3 +
       factorMap['research-development'] * 0.2 +
       factorMap['technological-adoption'] * 0.2 +
-      factorMap['infrastructure'] * 0.15 +
-      factorMap['media-freedom'] * 0.15) /
+      factorMap['infrastructure'] * 0.1 +
+      factorMap['environmental-regulation'] * -0.1) /
     100;
 
   const penalties =

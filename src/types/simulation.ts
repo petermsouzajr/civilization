@@ -167,18 +167,10 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
 
   // Environmental and Risk Factors
   {
-    id: 'environmental-protection',
-    name: 'Environmental Protection',
-    value: 0,
-    description: 'Level of environmental regulations',
-    category: 'Environmental',
-  },
-  {
     id: 'environmental-regulation',
     name: 'Environmental Regulation',
     value: 0,
-    description:
-      'Government oversight and enforcement of environmental standards',
+    description: 'Level of environmental oversight and regulation',
     category: 'Environmental',
   },
   {
