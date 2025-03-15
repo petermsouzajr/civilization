@@ -189,6 +189,10 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     15,
     (factorMap.get('godzilla-rampage') || 0) / 6.67
   );
+  const jokerChaosEffect = Math.min(
+    15,
+    (factorMap.get('joker-chaos-index') || 0) / 6.67
+  );
 
   // Calculate economic effects with capped impact
   const inflationEffect = Math.min(
@@ -433,118 +437,26 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
       immigrationBonus
   );
 
-  // Determine current state based on success rate and specific conditions
-  let currentState = 'Moderately Stable Society';
-  if (successRate < 20) {
-    currentState = 'Complete Societal Collapse';
-  } else if (successRate < 40) {
-    currentState = 'Severe Economic Crisis';
-  } else if (successRate < 60) {
-    currentState = 'Social and Economic Instability';
-  } else if (successRate < 80) {
-    currentState = 'Moderately Stable Society';
-  } else {
-    currentState = 'Highly Prosperous Society';
-  }
+  // Calculate fantasy effects
+  const fantasyEffects = calculateFantasyEffects(factors);
 
-  // Special state conditions with enhanced thresholds
-  if ((factorMap.get('joker-chaos-index') || 0) > 80) {
-    currentState = 'Complete Societal Anarchy';
-  }
-  if (oneChildPolicyEffect > 0.8) {
-    currentState = 'Severe Demographic Imbalance';
-  }
-  if (singleParentEffect > 0.8) {
-    currentState = 'Family Structure Breakdown';
-  }
-  if ((factorMap.get('closed-society') || 0) > 80) {
-    currentState = 'Total Societal Isolation';
-  }
-  if ((factorMap.get('closed-society') || 0) > 60) {
-    currentState = 'Restricted Social Freedom';
-  }
-  if (childLaborEffect > 0.7) {
-    currentState = 'Widespread Child Labor Crisis';
-  }
-  if (immigrationEffect > 0.8) {
-    currentState = 'Mass Immigration Surge';
-  }
+  // Convert factorMap to Record for compatibility with other functions
+  const factorRecord: Record<string, number> = {};
+  factorMap.forEach((value, key) => {
+    factorRecord[key] = value;
+  });
 
-  // Add special state conditions for new factors
-  if (inflationEffect > 0.7) {
-    currentState = 'Severe Hyperinflation Crisis';
-  }
-  if (energyCostEffect > 0.8) {
-    currentState = 'Critical Energy Shortage';
-  }
-  if (automationEffect > 0.8) {
-    currentState = 'Automation-Induced Unemployment';
-  }
-  if (publicDebtEffect > 0.9) {
-    currentState = 'National Debt Collapse';
-  }
-
-  // Add new special state conditions
-  if ((factorMap.get('policing-deficiency') || 0) > 80) {
-    currentState = 'Gangland Chaos';
-  }
-  if ((factorMap.get('housing-cost') || 0) > 80) {
-    currentState = 'Housing Collapse';
-  }
-  if ((factorMap.get('political-stability') || 0) < 20) {
-    currentState = 'Political Instability Crisis';
-  }
-  if ((factorMap.get('labor-rights') || 0) < 20) {
-    currentState = 'Labor Rights Crisis';
-  }
-  if (
-    (factorMap.get('political-stability') || 0) < 30 &&
-    (factorMap.get('domestic-war-risk') || 0) > 70
-  ) {
-    currentState = 'Civil War Risk';
-  }
-  if (
-    (factorMap.get('labor-rights') || 0) > 50 &&
-    (factorMap.get('economic-inequality') || 0) < 50
-  ) {
-    currentState = 'Labor Rights Success';
-  }
-
-  // Add new synergies
-  const policingInequalitySynergy =
-    (factorMap.get('policing-deficiency') || 0) > 50 &&
-    (factorMap.get('economic-inequality') || 0) > 70
-      ? Math.min(5, ((factorMap.get('policing-deficiency') || 0) - 50) * 0.1)
-      : 0;
-
-  const housingAidSynergy =
-    (factorMap.get('housing-cost') || 0) > 60 &&
-    (factorMap.get('government-aid') || 0) > 50
-      ? Math.min(5, ((factorMap.get('government-aid') || 0) - 50) * 0.1)
-      : 0;
-
-  // Add unemployment crisis state
-  if ((factorMap.get('unemployment-rate') || 0) > 80) {
-    currentState = 'Mass Unemployment Crisis';
-  }
-
-  // Add unemployment-government aid synergy
-  const unemploymentAidSynergy =
-    (factorMap.get('unemployment-rate') || 0) > 50 &&
-    (factorMap.get('government-aid') || 0) > 50
-      ? Math.min(5, ((factorMap.get('government-aid') || 0) - 50) * 0.1)
-      : 0;
-
-  // Apply synergies to lower class prosperity
-  lowerClassProsperity = applyStormThreshold(
-    normalizeValue(
-      lowerClassProsperity -
-        policingInequalitySynergy +
-        housingAidSynergy +
-        unemploymentAidSynergy
-    ),
-    totalPenalties
+  // Use our enhanced determineCurrentState function
+  const currentState = determineCurrentState(
+    lowerClassProsperity / 100,
+    middleClassStability / 100,
+    upperClassWealth / 100,
+    factorRecord,
+    fantasyEffects
   );
+
+  // Generate events based on current factors and fantasy effects
+  const events = generateEvents(factorRecord, fantasyEffects);
 
   return {
     factors,
@@ -553,7 +465,7 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     middleClassStability: Math.round(middleClassStability),
     upperClassWealth: Math.round(upperClassWealth),
     currentState,
-    events: [],
+    events,
   };
 }
 
@@ -723,7 +635,59 @@ const determineCurrentState = (
   factorMap: Record<string, number>,
   fantasyEffects: any
 ): string => {
-  // Fantasy states
+  // Fantasy states - enhanced with more creative outcomes
+  if (factorMap['mana-storm-intensity'] > 80) {
+    return 'Arcane Energy Revolution';
+  }
+  if (factorMap['mana-storm-intensity'] > 60) {
+    return 'Magical Renaissance';
+  }
+  if (factorMap['thanos-snap-probability'] > 80) {
+    return 'Perfectly Balanced Society';
+  }
+  if (factorMap['thanos-snap-probability'] > 60) {
+    return 'Post-Snap Resource Abundance';
+  }
+  if (factorMap['godzilla-rampage'] > 80) {
+    return 'Kaiju-Dominated Landscape';
+  }
+  if (factorMap['godzilla-rampage'] > 60) {
+    return 'Monster Defense Economy';
+  }
+  if (factorMap['joker-chaos-index'] > 80) {
+    return 'Society-Wide Madness';
+  }
+  if (factorMap['joker-chaos-index'] > 60) {
+    return 'Criminal Chaos Reigns';
+  }
+  if (factorMap['graphene-production'] > 80) {
+    return 'Graphene-Powered Utopia';
+  }
+  if (factorMap['graphene-production'] > 60) {
+    return 'Material Science Golden Age';
+  }
+
+  // Fantasy combinations
+  if (
+    factorMap['mana-storm-intensity'] > 60 &&
+    factorMap['graphene-production'] > 60
+  ) {
+    return 'Techno-Magical Civilization';
+  }
+  if (
+    factorMap['godzilla-rampage'] > 60 &&
+    factorMap['joker-chaos-index'] > 60
+  ) {
+    return 'Monster vs Clown Society';
+  }
+  if (
+    factorMap['graphene-production'] > 60 &&
+    factorMap['thanos-snap-probability'] > 60
+  ) {
+    return 'Advanced Tech, Half Population';
+  }
+
+  // Previous fantasy checks
   if (fantasyEffects.infrastructureDamage > 0.7) {
     return 'Severe Environmental Crisis';
   }
@@ -770,6 +734,7 @@ const generateEvents = (
 ): string[] => {
   const events: string[] = [];
 
+  // Basic events
   if (fantasyEffects.infrastructureDamage > 0.5) {
     events.push(
       'Natural disasters have caused widespread damage to infrastructure'
@@ -778,14 +743,155 @@ const generateEvents = (
   if (fantasyEffects.cohesionDamage > 0.5) {
     events.push('Internal conflicts are threatening social stability');
   }
-  if (fantasyEffects.manaEffect > 0.3) {
-    events.push('Mana storms are causing unpredictable effects across society');
+
+  // Regular society events based on factor extremes
+  if ((factorMap['economic-inequality'] || 0) > 70) {
+    events.push('Wealth inequality protests occurring in major cities');
   }
-  if (fantasyEffects.snapEffect < 0.5) {
-    events.push('A mysterious event has reduced the population');
+
+  if ((factorMap['corruption'] || 0) > 70) {
+    events.push('Major corruption scandal exposed in government');
   }
-  if (fantasyEffects.successRatePenalty > 0.3) {
-    events.push('Giant creatures are causing widespread destruction');
+
+  if ((factorMap['tax-rate'] || 0) > 80) {
+    events.push('Mass tax protests erupting across the country');
+  }
+
+  if ((factorMap['domestic-manufacturing'] || 0) < 20) {
+    events.push('Manufacturing sector collapse causing widespread layoffs');
+  }
+
+  if ((factorMap['healthcare'] || 0) < 30) {
+    events.push(
+      'Healthcare system overwhelmed, patients unable to receive care'
+    );
+  }
+
+  if ((factorMap['education'] || 0) < 30) {
+    events.push(
+      'Education crisis: students lacking basic resources and teachers'
+    );
+  }
+
+  if ((factorMap['infrastructure'] || 0) < 30) {
+    events.push('Major bridge collapse highlights infrastructure decay');
+  }
+
+  if ((factorMap['policing-deficiency'] || 0) > 70) {
+    events.push('Crime rates soaring in urban areas with inadequate policing');
+  }
+
+  if ((factorMap['housing-cost'] || 0) > 80) {
+    events.push(
+      'Housing market reaching crisis levels, homelessness rising rapidly'
+    );
+  }
+
+  if ((factorMap['unemployment-rate'] || 0) > 70) {
+    events.push(
+      'Unemployment crisis causing social unrest and economic hardship'
+    );
+  }
+
+  if ((factorMap['political-stability'] || 0) < 30) {
+    events.push(
+      'Government on verge of collapse amid protests and resignations'
+    );
+  }
+
+  // Advanced fantasy events (keep existing code)
+  if ((factorMap['mana-storm-intensity'] || 0) > 70) {
+    events.push('Archmages have seized control of major government positions');
+  } else if ((factorMap['mana-storm-intensity'] || 0) > 50) {
+    events.push(
+      'Magical energy storms have transformed 10% of the population into amateur wizards'
+    );
+  } else if ((factorMap['mana-storm-intensity'] || 0) > 30) {
+    events.push(
+      'Spontaneous magical occurrences are disrupting electronic communications'
+    );
+  }
+
+  if ((factorMap['thanos-snap-probability'] || 0) > 70) {
+    events.push(
+      'Half the population has mysteriously vanished, but traffic is much better'
+    );
+  } else if ((factorMap['thanos-snap-probability'] || 0) > 50) {
+    events.push('Strange reports of a purple alien collecting colorful stones');
+  } else if ((factorMap['thanos-snap-probability'] || 0) > 30) {
+    events.push(
+      'Infinity Stones detected in the region, housing prices are plummeting'
+    );
+  }
+
+  if ((factorMap['godzilla-rampage'] || 0) > 70) {
+    events.push(
+      'Giant monster attacks are now scheduled weekly events with tourism opportunities'
+    );
+  } else if ((factorMap['godzilla-rampage'] || 0) > 50) {
+    events.push(
+      'The military has established a Kaiju Defense Force with its own tax bracket'
+    );
+  } else if ((factorMap['godzilla-rampage'] || 0) > 30) {
+    events.push(
+      'Unusual seismic activity and radioactive lizard sightings reported offshore'
+    );
+  }
+
+  if ((factorMap['joker-chaos-index'] || 0) > 70) {
+    events.push(
+      'Emergency broadcast: Stay inside, avoid wearing makeup, and do not attend any comedy shows'
+    );
+  } else if ((factorMap['joker-chaos-index'] || 0) > 50) {
+    events.push(
+      'Citizens advised to temporarily avoid banks, clown shows, and playing card factories'
+    );
+  } else if ((factorMap['joker-chaos-index'] || 0) > 30) {
+    events.push(
+      'Unusual increase in crime with "theatrical elements" reported across major cities'
+    );
+  }
+
+  if ((factorMap['graphene-production'] || 0) > 70) {
+    events.push(
+      'Breakthrough graphene technology has revolutionized all industries, unemployment at record highs'
+    );
+  } else if ((factorMap['graphene-production'] || 0) > 50) {
+    events.push(
+      'Graphene products make up 50% of consumer electronics, causing massive industry shifts'
+    );
+  } else if ((factorMap['graphene-production'] || 0) > 30) {
+    events.push(
+      'Early graphene manufacturing has begun to disrupt traditional materials markets'
+    );
+  }
+
+  // Combination events for extra humor
+  if (
+    (factorMap['godzilla-rampage'] || 0) > 40 &&
+    (factorMap['graphene-production'] || 0) > 40
+  ) {
+    events.push(
+      'New graphene-reinforced buildings withstanding kaiju attacks, insurance rates dropping'
+    );
+  }
+
+  if (
+    (factorMap['joker-chaos-index'] || 0) > 40 &&
+    (factorMap['thanos-snap-probability'] || 0) > 40
+  ) {
+    events.push(
+      'Clown sightings down 50% after mysterious disappearance event'
+    );
+  }
+
+  if (
+    (factorMap['mana-storm-intensity'] || 0) > 40 &&
+    (factorMap['godzilla-rampage'] || 0) > 40
+  ) {
+    events.push(
+      'Wizards attempting to tame giant monsters with mixed, mostly catastrophic results'
+    );
   }
 
   return events;

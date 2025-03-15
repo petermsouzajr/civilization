@@ -171,6 +171,7 @@ export default function Home() {
   const [simulationState, setSimulationState] = useState(
     calculateOutcomes(DEFAULT_FACTORS)
   );
+  const [selectedScenario, setSelectedScenario] = useState<string>('');
 
   // Initialize random values on client side
   useEffect(() => {
@@ -211,6 +212,7 @@ export default function Home() {
   };
 
   const applyPreset = (preset: Preset) => {
+    setSelectedScenario(preset.name);
     // Create a map of preset factors for easy lookup
     const presetMap = new Map(preset.factors.map((f) => [f.id, f]));
 
@@ -345,7 +347,6 @@ export default function Home() {
                   className="h-2 bg-gray-200 dark:bg-gray-700"
                 />
               </div>
-
               {/* Class Prosperity */}
               <div className="space-y-2">
                 <div
@@ -412,39 +413,18 @@ export default function Home() {
                   />
                 </div>
               </div>
-
-              {/* Current State */}
-
-              {/* Events */}
-              {simulationState.events.length > 0 && (
-                <div className="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
-                  <h3 className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Recent Events
-                  </h3>
-                  <ul className="space-y-2">
-                    {simulationState.events.map((event, index) => (
-                      <li
-                        key={index}
-                        className="text-sm text-gray-600 dark:text-gray-400"
-                      >
-                        {event}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
             </CardContent>
           </Card>
           <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg flex-1 flex flex-col min-h-0">
             <CardHeader className="shrink-0">
               <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
-                Scenarios
+                Scenarios{selectedScenario ? `: ${selectedScenario}` : ''}
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto min-h-0">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     Basic Scenarios
                   </h3>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -455,7 +435,7 @@ export default function Home() {
                             <Button
                               variant="outline"
                               className={cn(
-                                'w-full text-base transition-colors',
+                                'w-full text-lg font-bold transition-colors',
                                 PRESET_COLORS[
                                   preset.name as keyof typeof PRESET_COLORS
                                 ]
@@ -479,7 +459,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-base font-medium text-gray-900 dark:text-gray-100">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
                     Historical Scenarios
                   </h3>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -490,7 +470,7 @@ export default function Home() {
                             <Button
                               variant="outline"
                               className={cn(
-                                'w-full text-base transition-colors',
+                                'w-full text-lg font-bold transition-colors',
                                 PRESET_COLORS[
                                   preset.name as keyof typeof PRESET_COLORS
                                 ]
