@@ -29,7 +29,7 @@ const nextConfig = {
   experimental: {
     typedRoutes: false,
   },
-  basePath: '/civilization',
+  // basePath: '/civilization',
   // output: 'export',
 };
 
