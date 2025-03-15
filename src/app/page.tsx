@@ -179,6 +179,7 @@ export default function Home() {
         // Skip fantasy factors
         if (
           [
+            'graphene-production',
             'mana-storm-intensity',
             'thanos-snap-probability',
             'godzilla-rampage',
@@ -226,6 +227,16 @@ export default function Home() {
           value: generateRandomVariation(presetFactor.value),
         };
       }
+      // Special case for graphene-production in Technocratic Society
+      if (
+        defaultFactor.id === 'graphene-production' &&
+        preset.name === 'Technocratic Society'
+      ) {
+        return {
+          ...defaultFactor,
+          value: generateRandomVariation(80),
+        };
+      }
       // If it's a fantasy factor or not in preset, keep the current value
       return defaultFactor;
     });
@@ -237,6 +248,7 @@ export default function Home() {
   // Helper function to identify fantasy factors
   const isFantasyFactor = (id: string): boolean => {
     return [
+      'graphene-production',
       'mana-storm-intensity',
       'thanos-snap-probability',
       'godzilla-rampage',

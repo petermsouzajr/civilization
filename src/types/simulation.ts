@@ -234,6 +234,13 @@ export const DEFAULT_FACTORS: SocietalFactor[] = [
 
   // Fantasy Factors (at the bottom)
   {
+    id: 'graphene-production',
+    name: 'Graphene Production',
+    value: 0,
+    description: 'Benefits from cheap and effective graphene manufacturing',
+    category: 'Fantasy',
+  },
+  {
     id: 'mana-storm-intensity',
     name: 'Mana Storm Intensity',
     value: 0,

@@ -173,6 +173,10 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
       : 0;
 
   // Calculate fantasy effects with tighter caps
+  const grapheneProductionEffect = Math.min(
+    15,
+    (factorMap.get('graphene-production') || 0) / 6.67
+  );
   const manaStormEffect = Math.min(
     15,
     (factorMap.get('mana-storm-intensity') || 0) / 6.67
@@ -264,7 +268,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         childLaborEffect * 0.2 -
         singleParentEffect * 0.15 -
         (factorMap.get('natural-disaster-frequency') || 0) * 0.15 -
-        (factorMap.get('domestic-war-risk') || 0) * 0.15
+        (factorMap.get('domestic-war-risk') || 0) * 0.15 +
+        grapheneProductionEffect * 0.5
     ),
     totalPenalties
   );
@@ -306,7 +311,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         oneChildPolicyEffect * 0.2 -
         immigrationEffect * 0.15 -
         (factorMap.get('natural-disaster-frequency') || 0) * 0.15 -
-        (factorMap.get('domestic-war-risk') || 0) * 0.2
+        (factorMap.get('domestic-war-risk') || 0) * 0.2 +
+        grapheneProductionEffect * 0.4
     ),
     totalPenalties
   );
@@ -350,7 +356,8 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         godzillaEffect * 0.15 -
         childLaborEffect * 0.1 +
         (factorMap.get('natural-disaster-frequency') || 0) * 0.1 -
-        (factorMap.get('domestic-war-risk') || 0) * 0.15
+        (factorMap.get('domestic-war-risk') || 0) * 0.15 +
+        grapheneProductionEffect * 0.5
     ),
     totalPenalties
   );

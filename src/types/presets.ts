@@ -94,9 +94,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -281,9 +281,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -468,9 +468,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -504,9 +504,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'currency-inflation',
-        value: 0,
+        value: 5,
         name: 'Currency Inflation',
-        description: 'No currency',
+        description: 'Minimal trade inflation',
       },
       {
         id: 'energy-cost',
@@ -637,9 +637,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -806,9 +806,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 30,
+        value: 5,
         name: 'One Child Policy',
-        description: 'Population control',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -875,6 +875,12 @@ export const PRESETS: Preset[] = [
         value: 20,
         name: 'Religious Influence',
         description: 'Secular society',
+      },
+      {
+        id: 'graphene-production',
+        value: 80,
+        name: 'Graphene Production',
+        description: 'Advanced materials research',
       },
       {
         id: 'environmental-protection',
@@ -975,9 +981,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -1144,9 +1150,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -1313,9 +1319,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -1482,9 +1488,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -1597,9 +1603,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -1712,9 +1718,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -1827,9 +1833,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 70,
+        value: 5,
         name: 'One Child Policy',
-        description: 'Strict control',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -1945,9 +1951,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2062,9 +2068,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2179,9 +2185,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2296,9 +2302,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2413,9 +2419,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2530,9 +2536,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2647,9 +2653,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2764,9 +2770,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2881,9 +2887,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -2998,9 +3004,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 30,
+        value: 5,
         name: 'One Child Policy',
-        description: 'Population control',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -3115,9 +3121,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -3232,9 +3238,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -3349,9 +3355,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -3466,9 +3472,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -3583,9 +3589,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -3700,9 +3706,9 @@ export const PRESETS: Preset[] = [
       },
       {
         id: 'one-child-policy',
-        value: 0,
+        value: 5,
         name: 'One Child Policy',
-        description: 'No restrictions',
+        description: 'Minimal restrictions',
       },
       {
         id: 'single-parent-household',
@@ -3774,7 +3780,7 @@ export const HISTORICAL_PRESETS: HistoricalPreset[] = [
       'labor-rights': 20,
       'religious-influence': 60,
       'closed-society': 40,
-      'one-child-policy': 0,
+      'one-child-policy': 5,
       'single-parent-household': 30,
       'child-labor': 80,
       'self-defense-freedom': 50,
@@ -3813,7 +3819,7 @@ export const HISTORICAL_PRESETS: HistoricalPreset[] = [
       'labor-rights': 20,
       'religious-influence': 70,
       'closed-society': 60,
-      'one-child-policy': 0,
+      'one-child-policy': 5,
       'single-parent-household': 40,
       'child-labor': 70,
       'self-defense-freedom': 70,
@@ -3852,7 +3858,7 @@ export const HISTORICAL_PRESETS: HistoricalPreset[] = [
       'labor-rights': 60,
       'religious-influence': 60,
       'closed-society': 30,
-      'one-child-policy': 0,
+      'one-child-policy': 5,
       'single-parent-household': 30,
       'child-labor': 20,
       'self-defense-freedom': 60,
@@ -3891,7 +3897,7 @@ export const HISTORICAL_PRESETS: HistoricalPreset[] = [
       'labor-rights': 20,
       'religious-influence': 50,
       'closed-society': 70,
-      'one-child-policy': 0,
+      'one-child-policy': 5,
       'single-parent-household': 50,
       'child-labor': 40,
       'self-defense-freedom': 60,
@@ -3930,7 +3936,7 @@ export const HISTORICAL_PRESETS: HistoricalPreset[] = [
       'labor-rights': 40,
       'religious-influence': 30,
       'closed-society': 60,
-      'one-child-policy': 0,
+      'one-child-policy': 5,
       'single-parent-household': 40,
       'child-labor': 30,
       'self-defense-freedom': 50,
