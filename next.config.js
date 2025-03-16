@@ -30,8 +30,8 @@ const nextConfig = {
     typedRoutes: false,
   },
   // basePath: '/civilization',
-  // assetPrefix: 'https://civilization-peter-souzas-projects.vercel.app',
-  // output: 'export',
+  assetPrefix: 'https://civilization-peter-souzas-projects.vercel.app',
+  output: 'export',
 };
 
 module.exports = nextConfig;
