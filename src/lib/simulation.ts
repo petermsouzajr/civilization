@@ -173,24 +173,24 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
 
   // Calculate fantasy effects with tighter caps
   const grapheneProductionEffect = Math.min(
-    15,
-    (factorMap.get('graphene-production') || 0) / 6.67
+    30, // Increased from 15
+    (factorMap.get('graphene-production') || 0) / 3.33 // Doubled effect
   );
   const manaStormEffect = Math.min(
-    15,
-    (factorMap.get('mana-storm-intensity') || 0) / 6.67
+    30, // Increased from 15
+    (factorMap.get('mana-storm-intensity') || 0) / 3.33 // Doubled effect
   );
   const thanosSnapEffect = Math.min(
-    15,
-    ((factorMap.get('thanos-snap-probability') || 0) / 100) * 15
+    30, // Increased from 15
+    ((factorMap.get('thanos-snap-probability') || 0) / 100) * 30 // Doubled effect
   );
   const godzillaEffect = Math.min(
-    15,
-    (factorMap.get('godzilla-rampage') || 0) / 6.67
+    30, // Increased from 15
+    (factorMap.get('godzilla-rampage') || 0) / 3.33 // Doubled effect
   );
   const jokerChaosEffect = Math.min(
-    15,
-    (factorMap.get('joker-chaos-index') || 0) / 6.67
+    30, // Increased from 15
+    (factorMap.get('joker-chaos-index') || 0) / 3.33 // Doubled effect
   );
 
   // Calculate economic effects with capped impact
@@ -266,15 +266,16 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         energyCostEffect * 0.15 -
         automationEffect * 0.15 -
         publicDebtEffect * 0.15 -
-        thanosSnapEffect * 0.2 -
-        godzillaEffect * 0.15 -
+        thanosSnapEffect * 0.5 -
+        godzillaEffect * 0.4 -
+        jokerChaosEffect * 0.5 -
         childLaborEffect * 0.2 -
         singleParentEffect * 0.15 -
         (factorMap.get('natural-disaster-frequency') || 0) * 0.15 -
         (factorMap.get('domestic-war-risk') || 0) * 0.15 -
         // Pandemic effects - higher impact on lower class (2x factor)
         (factorMap.get('public-health-crisis') || 0) * 0.3 +
-        grapheneProductionEffect * 0.5
+        grapheneProductionEffect * 0.6
     ),
     totalPenalties
   );
@@ -293,6 +294,7 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     lowerClassProsperity / compoundingCrisisMultiplier
   );
 
+  // Calculate middle class stability
   const middleClassStability = applyStormThreshold(
     normalizeValue(
       45 + // Base resilience
@@ -325,15 +327,16 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         energyCostEffect * 0.15 -
         automationEffect * 0.1 -
         publicDebtEffect * 0.2 -
-        thanosSnapEffect * 0.2 -
-        godzillaEffect * 0.15 -
+        thanosSnapEffect * 0.5 - // Increased from 0.2
+        godzillaEffect * 0.4 - // Increased from 0.15
+        jokerChaosEffect * 0.4 - // Added direct Joker effect
         oneChildPolicyEffect * 0.2 -
         immigrationEffect * 0.15 -
         (factorMap.get('natural-disaster-frequency') || 0) * 0.15 -
         (factorMap.get('domestic-war-risk') || 0) * 0.2 -
         // Pandemic effects - moderate impact on middle class (1.5x factor)
         (factorMap.get('public-health-crisis') || 0) * 0.2 +
-        grapheneProductionEffect * 0.4
+        grapheneProductionEffect * 0.6 // Increased from 0.4
     ),
     totalPenalties
   );
@@ -344,6 +347,7 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
     middleClassStability / (1 + (compoundingCrisisMultiplier - 1) * 0.8)
   );
 
+  // Calculate upper class wealth
   const upperClassWealth = applyStormThreshold(
     normalizeValue(
       40 + // Base resilience
@@ -379,23 +383,79 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
         energyCostEffect * 0.1 +
         automationEffect * 0.15 +
         publicDebtEffect * 0.15 +
-        thanosSnapEffect * 0.2 -
-        godzillaEffect * 0.15 -
+        thanosSnapEffect * 0.4 - // Increased from 0.2 and negative impact
+        godzillaEffect * 0.3 - // Increased from 0.15
+        jokerChaosEffect * 0.3 - // Added direct Joker effect
         childLaborEffect * 0.1 +
         (factorMap.get('natural-disaster-frequency') || 0) * 0.1 -
         (factorMap.get('domestic-war-risk') || 0) * 0.15 -
         // Pandemic effects - minimal impact on upper class (0.5x factor)
         (factorMap.get('public-health-crisis') || 0) * 0.1 +
-        grapheneProductionEffect * 0.5
+        grapheneProductionEffect * 0.7 // Increased from 0.5
     ),
     totalPenalties
   );
 
   // Apply compounding crisis multiplier to upper class (at 0.4x the impact of lower class)
-  const upperClassAdjusted = Math.max(
+  let adjustedUpperClassWealth = Math.max(
     0,
     upperClassWealth / (1 + (compoundingCrisisMultiplier - 1) * 0.4)
   );
+
+  // Modified values for direct fantasy impacts
+  let adjustedLowerClassProsperity = lowerClassProsperity;
+  let adjustedMiddleClassProsperity = middleClassAdjusted;
+
+  // Create extra adjustment for fantasy effects for more dramatic class changes
+  const manaIntensity = factorMap.get('mana-storm-intensity') || 0;
+  if (manaIntensity > 60) {
+    // Magic benefits upper class most
+    adjustedUpperClassWealth += manaIntensity * 0.3;
+    adjustedMiddleClassProsperity += manaIntensity * 0.15;
+  }
+
+  // Thanos snap reduces all classes dramatically at high levels
+  const thanosSnapProb = factorMap.get('thanos-snap-probability') || 0;
+  if (thanosSnapProb > 60) {
+    const snapReduction = thanosSnapProb * 0.4;
+    adjustedLowerClassProsperity = Math.max(
+      0,
+      adjustedLowerClassProsperity - snapReduction
+    );
+    adjustedMiddleClassProsperity = Math.max(
+      0,
+      adjustedMiddleClassProsperity - snapReduction
+    );
+    adjustedUpperClassWealth = Math.max(
+      0,
+      adjustedUpperClassWealth - snapReduction
+    );
+  }
+
+  // Joker chaos impacts all classes but middle class most heavily
+  const jokerChaos = factorMap.get('joker-chaos-index') || 0;
+  if (jokerChaos > 50) {
+    adjustedMiddleClassProsperity = Math.max(
+      0,
+      adjustedMiddleClassProsperity - jokerChaos * 0.3
+    );
+    adjustedLowerClassProsperity = Math.max(
+      0,
+      adjustedLowerClassProsperity - jokerChaos * 0.2
+    );
+    adjustedUpperClassWealth = Math.max(
+      0,
+      adjustedUpperClassWealth - jokerChaos * 0.1
+    );
+  }
+
+  // Graphene production benefits all classes but upper class most significantly
+  const graphene = factorMap.get('graphene-production') || 0;
+  if (graphene > 40) {
+    adjustedUpperClassWealth += graphene * 0.4;
+    adjustedMiddleClassProsperity += graphene * 0.3;
+    adjustedLowerClassProsperity += graphene * 0.15;
+  }
 
   // Calculate inequality penalty with capped impact
   const inequalityPenalty = Math.min(
@@ -459,9 +519,9 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   );
 
   const successRate = normalizeValue(
-    (lowerClassProsperity * 0.4 +
-      middleClassAdjusted * 0.35 +
-      upperClassAdjusted * 0.25) *
+    (adjustedLowerClassProsperity * 0.4 +
+      adjustedMiddleClassProsperity * 0.35 +
+      adjustedUpperClassWealth * 0.25) *
       scalingFactor +
       cohesionBonus -
       demographicPenalty +
@@ -479,9 +539,9 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
 
   // Use our enhanced determineCurrentState function
   const currentState = determineCurrentState(
-    lowerClassProsperity / 100,
-    middleClassAdjusted / 100,
-    upperClassAdjusted / 100,
+    adjustedLowerClassProsperity / 100,
+    adjustedMiddleClassProsperity / 100,
+    adjustedUpperClassWealth / 100,
     factorRecord,
     fantasyEffects
   );
@@ -492,9 +552,9 @@ export function calculateOutcomes(factors: SocietalFactor[]): SimulationState {
   return {
     factors,
     successRate: Math.round(successRate),
-    lowerClassProsperity: Math.round(lowerClassProsperity),
-    middleClassStability: Math.round(middleClassAdjusted),
-    upperClassWealth: Math.round(upperClassAdjusted),
+    lowerClassProsperity: Math.round(adjustedLowerClassProsperity),
+    middleClassStability: Math.round(adjustedMiddleClassProsperity),
+    upperClassWealth: Math.round(adjustedUpperClassWealth),
     currentState,
     events,
   };
@@ -519,18 +579,28 @@ const calculateFantasyEffects = (factors: SocietalFactor[]) => {
   // Mana Storm Effects
   const manaIntensity = factorMap['mana-storm-intensity'] / 100;
   const randomFactor = Math.random();
-  const manaEffect = (randomFactor - 0.5) * manaIntensity * 2;
+  const manaEffect = (randomFactor - 0.5) * manaIntensity * 3; // Increased from 2
 
   // Thanos Snap Effects
   const snapProbability = factorMap['thanos-snap-probability'] / 100;
   const snapOccurred = Math.random() < snapProbability;
-  const snapEffect = snapOccurred ? 0.5 : 1;
+  const snapEffect = snapOccurred ? 0.3 : 1; // More dramatic effect (0.5 to 0.3)
 
   // Godzilla Rampage Effects
   const godzillaFrequency = factorMap['godzilla-rampage'] / 100;
-  const infrastructureDamageFromGodzilla = godzillaFrequency * 0.6;
-  const defenseBoostFromGodzilla = godzillaFrequency * 0.4;
-  const successRatePenalty = godzillaFrequency * 0.3;
+  const infrastructureDamageFromGodzilla = godzillaFrequency * 0.9; // Increased from 0.6
+  const defenseBoostFromGodzilla = godzillaFrequency * 0.6; // Increased from 0.4
+  const successRatePenalty = godzillaFrequency * 0.5; // Increased from 0.3
+
+  // Joker Chaos Effects (New)
+  const jokerChaos = factorMap['joker-chaos-index'] / 100;
+  const socialCohesionDamage = jokerChaos * 0.9;
+  const economicDisruption = jokerChaos * 0.7;
+
+  // Graphene Production Effects (New)
+  const grapheneProduction = factorMap['graphene-production'] / 100;
+  const economicBoost = grapheneProduction * 0.8;
+  const techAdvancement = grapheneProduction * 0.9;
 
   return {
     infrastructureDamage:
@@ -538,11 +608,14 @@ const calculateFantasyEffects = (factors: SocietalFactor[]) => {
     healthcareStrain,
     lowerClassImpact,
     defenseBoost: defenseBoost + defenseBoostFromGodzilla,
-    cohesionDamage,
+    cohesionDamage: cohesionDamage + socialCohesionDamage,
     middleClassImpact,
     manaEffect,
     snapEffect,
     successRatePenalty,
+    economicDisruption, // New
+    economicBoost, // New
+    techAdvancement, // New
   };
 };
 
@@ -611,9 +684,22 @@ export const runSimulation = (factors: SocietalFactor[]): SimulationState => {
   middleClassStability *= fantasyEffects.snapEffect;
   upperClassWealth *= fantasyEffects.snapEffect;
 
-  lowerClassProsperity -= fantasyEffects.lowerClassImpact;
-  middleClassStability -= fantasyEffects.middleClassImpact;
-  upperClassWealth += fantasyEffects.manaEffect * 20;
+  lowerClassProsperity -= fantasyEffects.lowerClassImpact * 40; // Multiplied by 40 instead of using raw value
+  middleClassStability -= fantasyEffects.middleClassImpact * 40; // Multiplied by 40 instead of using raw value
+  upperClassWealth += fantasyEffects.manaEffect * 35; // Increased from 20
+
+  // Apply Joker and Graphene effects (new)
+  lowerClassProsperity -= fantasyEffects.economicDisruption * 30;
+  middleClassStability -= fantasyEffects.economicDisruption * 25;
+
+  // Graphene benefits upper and middle classes more
+  middleClassStability += fantasyEffects.economicBoost * 25;
+  upperClassWealth += fantasyEffects.techAdvancement * 35;
+
+  // Apply godzilla rampage effects more dramatically
+  lowerClassProsperity -= (factorMap['godzilla-rampage'] || 0) * 0.4;
+  middleClassStability -= (factorMap['godzilla-rampage'] || 0) * 0.3;
+  upperClassWealth -= (factorMap['godzilla-rampage'] || 0) * 0.2;
 
   // Apply pandemic effects differently to each class
   const publicHealthCrisis = factorMap['public-health-crisis'] || 0;
@@ -697,54 +783,85 @@ const determineCurrentState = (
 ): string => {
   // Fantasy states - enhanced with more creative outcomes
   if (factorMap['mana-storm-intensity'] > 80) {
-    return 'Arcane Energy Revolution';
+    return 'Arcane Flux Reality';
   }
   if (factorMap['mana-storm-intensity'] > 60) {
-    return 'Magical Renaissance';
+    return 'Magical Energy Grid';
   }
+  if (factorMap['mana-storm-intensity'] > 40) {
+    return 'Emerging Spell Economy';
+  }
+
   if (factorMap['thanos-snap-probability'] > 80) {
-    return 'Perfectly Balanced Society';
+    return 'Decimated Paradise';
   }
   if (factorMap['thanos-snap-probability'] > 60) {
-    return 'Post-Snap Resource Abundance';
+    return 'Infinity Gauntlet Regime';
   }
+  if (factorMap['thanos-snap-probability'] > 40) {
+    return 'Half-Empty Cities';
+  }
+
   if (factorMap['godzilla-rampage'] > 80) {
-    return 'Kaiju-Dominated Landscape';
+    return 'Kaiju Apocalypse';
   }
   if (factorMap['godzilla-rampage'] > 60) {
-    return 'Monster Defense Economy';
+    return 'Giant Monster Battleground';
   }
+  if (factorMap['godzilla-rampage'] > 40) {
+    return 'Coastal Cities Evacuated';
+  }
+
   if (factorMap['joker-chaos-index'] > 80) {
-    return 'Society-Wide Madness';
+    return 'Total Anarchic Madness';
   }
   if (factorMap['joker-chaos-index'] > 60) {
-    return 'Criminal Chaos Reigns';
+    return 'Clown Prince Terror State';
   }
+  if (factorMap['joker-chaos-index'] > 40) {
+    return 'Criminal Carnival Rising';
+  }
+
   if (factorMap['graphene-production'] > 80) {
-    return 'Graphene-Powered Utopia';
+    return 'Carbon Nanotech Utopia';
   }
   if (factorMap['graphene-production'] > 60) {
-    return 'Material Science Golden Age';
+    return 'Graphene Industrial Revolution';
+  }
+  if (factorMap['graphene-production'] > 40) {
+    return 'Material Science Breakthrough';
   }
 
   // Fantasy combinations
   if (
-    factorMap['mana-storm-intensity'] > 60 &&
-    factorMap['graphene-production'] > 60
+    factorMap['mana-storm-intensity'] > 50 &&
+    factorMap['graphene-production'] > 50
   ) {
-    return 'Techno-Magical Civilization';
+    return 'Arcane-Enhanced Graphene Age';
   }
   if (
-    factorMap['godzilla-rampage'] > 60 &&
-    factorMap['joker-chaos-index'] > 60
+    factorMap['godzilla-rampage'] > 50 &&
+    factorMap['joker-chaos-index'] > 50
   ) {
-    return 'Monster vs Clown Society';
+    return 'Kaiju vs Clown Wasteland';
   }
   if (
-    factorMap['graphene-production'] > 60 &&
-    factorMap['thanos-snap-probability'] > 60
+    factorMap['graphene-production'] > 50 &&
+    factorMap['thanos-snap-probability'] > 50
   ) {
-    return 'Advanced Tech, Half Population';
+    return 'Post-Vanish Tech Singularity';
+  }
+  if (
+    factorMap['mana-storm-intensity'] > 50 &&
+    factorMap['thanos-snap-probability'] > 50
+  ) {
+    return 'Perfectly Balanced Magic';
+  }
+  if (
+    factorMap['godzilla-rampage'] > 50 &&
+    factorMap['graphene-production'] > 50
+  ) {
+    return 'Kaiju-Proof Graphene Cities';
   }
 
   // Previous fantasy checks
@@ -859,80 +976,115 @@ const generateEvents = (
     );
   }
 
-  // Advanced fantasy events (keep existing code)
+  // Advanced fantasy events
   if ((factorMap['mana-storm-intensity'] || 0) > 70) {
-    events.push('Archmages have seized control of major government positions');
+    events.push(
+      'Magical energy has warped reality - gravity now works sideways on Tuesdays'
+    );
+    events.push(
+      'Council of Archmages has seized control of all major corporations'
+    );
   } else if ((factorMap['mana-storm-intensity'] || 0) > 50) {
     events.push(
-      'Magical energy storms have transformed 10% of the population into amateur wizards'
+      'Mana storms have transformed animals into familiars, pet adoption rates skyrocket'
+    );
+    events.push(
+      'Spontaneous spell casting has replaced conventional energy production'
     );
   } else if ((factorMap['mana-storm-intensity'] || 0) > 30) {
     events.push(
-      'Spontaneous magical occurrences are disrupting electronic communications'
+      'Strange magical disturbances reported in electronics and power grids'
     );
   }
 
   if ((factorMap['thanos-snap-probability'] || 0) > 70) {
     events.push(
-      'Half the population has mysteriously vanished, but traffic is much better'
+      'Exactly 50% of population has vanished without explanation - housing market crashes'
+    );
+    events.push(
+      'Resource consumption halved overnight, climate scientists baffled by sudden carbon drop'
     );
   } else if ((factorMap['thanos-snap-probability'] || 0) > 50) {
-    events.push('Strange reports of a purple alien collecting colorful stones');
-  } else if ((factorMap['thanos-snap-probability'] || 0) > 30) {
     events.push(
-      'Infinity Stones detected in the region, housing prices are plummeting'
+      'Infinity Gauntlet sightings confirmed by multiple governments'
     );
+    events.push(
+      'Purple alien dictator declares population reduction "inevitable"'
+    );
+  } else if ((factorMap['thanos-snap-probability'] || 0) > 30) {
+    events.push('Strange reports of people turning to dust then reappearing');
   }
 
   if ((factorMap['godzilla-rampage'] || 0) > 70) {
     events.push(
-      'Giant monster attacks are now scheduled weekly events with tourism opportunities'
+      'Major coastal cities abandoned as kaiju territory, inland property values triple'
+    );
+    events.push(
+      'Giant monster tourism industry now 15% of GDP, monster-watching safaris fully booked'
     );
   } else if ((factorMap['godzilla-rampage'] || 0) > 50) {
     events.push(
-      'The military has established a Kaiju Defense Force with its own tax bracket'
+      'Massive bipedal lizard sightings now routine, evacuation drills mandatory'
+    );
+    events.push(
+      'Government establishes Kaiju Defense Force with largest budget allocation in history'
     );
   } else if ((factorMap['godzilla-rampage'] || 0) > 30) {
     events.push(
-      'Unusual seismic activity and radioactive lizard sightings reported offshore'
+      'Unusual radiation signatures detected offshore, Navy reports "reptilian megafauna"'
     );
   }
 
   if ((factorMap['joker-chaos-index'] || 0) > 70) {
     events.push(
-      'Emergency broadcast: Stay inside, avoid wearing makeup, and do not attend any comedy shows'
+      'Society in complete breakdown as laughing gas attacks hit all major institutions'
+    );
+    events.push(
+      'Currency replaced by playing cards, economy in shambles as Jack outranks Queen'
     );
   } else if ((factorMap['joker-chaos-index'] || 0) > 50) {
     events.push(
-      'Citizens advised to temporarily avoid banks, clown shows, and playing card factories'
+      'Clown-themed crimes up 8000%, makeup supplies restricted by federal mandate'
+    );
+    events.push(
+      'Civilian panic growing as public officials keep disappearing after "funny encounters"'
     );
   } else if ((factorMap['joker-chaos-index'] || 0) > 30) {
     events.push(
-      'Unusual increase in crime with "theatrical elements" reported across major cities'
+      'Strange increase in crime statistics involving unusual weapons and practical jokes'
     );
   }
 
   if ((factorMap['graphene-production'] || 0) > 70) {
     events.push(
-      'Breakthrough graphene technology has revolutionized all industries, unemployment at record highs'
+      'Carbon-based computing renders silicon obsolete, entire tech industry restructured'
+    );
+    events.push(
+      'Graphene construction transforms architecture - mile-high buildings now commonplace'
     );
   } else if ((factorMap['graphene-production'] || 0) > 50) {
     events.push(
-      'Graphene products make up 50% of consumer electronics, causing massive industry shifts'
+      'Graphene-enhanced products dominate markets, traditional materials industries collapse'
+    );
+    events.push(
+      'Superconducting graphene grid eliminates energy losses, power costs plummet'
     );
   } else if ((factorMap['graphene-production'] || 0) > 30) {
     events.push(
-      'Early graphene manufacturing has begun to disrupt traditional materials markets'
+      'Promising graphene applications emerging in electronics and construction sectors'
     );
   }
 
-  // Combination events for extra humor
+  // Combination events for extra drama and humor
   if (
     (factorMap['godzilla-rampage'] || 0) > 40 &&
     (factorMap['graphene-production'] || 0) > 40
   ) {
     events.push(
-      'New graphene-reinforced buildings withstanding kaiju attacks, insurance rates dropping'
+      'Graphene-reinforced buildings survive kaiju attacks, investors rush to monster-proof real estate'
+    );
+    events.push(
+      'Carbon nanotube nets deployed in attempts to capture and study giant monsters'
     );
   }
 
@@ -941,7 +1093,10 @@ const generateEvents = (
     (factorMap['thanos-snap-probability'] || 0) > 40
   ) {
     events.push(
-      'Clown sightings down 50% after mysterious disappearance event'
+      'Clown population inexplicably halved, remaining jesters twice as dangerous'
+    );
+    events.push(
+      'Disappeared population returns with strange makeup and purple skin tones'
     );
   }
 
@@ -950,7 +1105,34 @@ const generateEvents = (
     (factorMap['godzilla-rampage'] || 0) > 40
   ) {
     events.push(
-      'Wizards attempting to tame giant monsters with mixed, mostly catastrophic results'
+      'Wizards attempt to control giant monsters using arcane bindings with catastrophic results'
+    );
+    events.push(
+      'Kaiju exposed to mana storms develop elemental breath attacks, property damage increases'
+    );
+  }
+
+  if (
+    (factorMap['mana-storm-intensity'] || 0) > 40 &&
+    (factorMap['graphene-production'] || 0) > 40
+  ) {
+    events.push(
+      'Graphene infused with magical properties creates self-repairing infrastructure'
+    );
+    events.push(
+      'Arcane-enhanced carbon nanotubes enabling levitating buildings and transportation'
+    );
+  }
+
+  if (
+    (factorMap['joker-chaos-index'] || 0) > 40 &&
+    (factorMap['mana-storm-intensity'] || 0) > 40
+  ) {
+    events.push(
+      'Magical pranksters causing reality distortions, Tuesday now comes after Friday'
+    );
+    events.push(
+      'Laughing spells affect government officials during international summit'
     );
   }
 
@@ -998,7 +1180,6 @@ const calculateLowerClassProsperity = (
   prosperity *= 1 - ((factorMap['policing-deficiency'] || 0) / 100) * 0.3;
   prosperity *= 1 - ((factorMap['housing-cost'] || 0) / 100) * 0.3;
   prosperity *= 1 - ((factorMap['unemployment-rate'] || 0) / 100) * 0.6;
-  prosperity *= 1 - ((factorMap['domestic-war-risk'] || 0) / 100) * 0.3;
   prosperity *= 1 - ((factorMap['currency-inflation'] || 0) / 100) * 0.3;
   prosperity *= 1 - ((factorMap['public-health-crisis'] || 0) / 100) * 0.6; // Highest impact class
 
