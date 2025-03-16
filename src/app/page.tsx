@@ -260,7 +260,248 @@ export default function Home() {
 
   return (
     <main className="h-screen w-screen flex flex-col bg-gray-800 dark:bg-gray-950">
-      <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 p-4 min-h-0">
+      {/* Mobile Layout */}
+      <div className="flex-1 flex flex-col md:hidden min-h-0">
+        {/* Fixed Simulation Results - Top 50% on mobile */}
+        <div className=" shrink-0">
+          <Card className="h-full bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
+            <CardHeader className="shrink-0">
+              <div
+                className={cn(
+                  ' rounded-lg transition-all duration-400 ease-in-out',
+                  getStatusColor(simulationState.currentState)
+                )}
+              >
+                <p className="text-center text-2xl font-medium text-gray-900">
+                  <span className="font-bold text-left text-gray-900 dark:text-gray-100">
+                    Simulation Results:{' '}
+                  </span>
+                  {simulationState.currentState}
+                </p>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {/* Success Metrics */}
+              <div
+                className={cn(
+                  ' outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-2 transition-colors duration-300',
+                  getSuccessBackgroundColor(simulationState.successRate)
+                )}
+              >
+                <div className="flex justify-between">
+                  <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    Overall Success Rate
+                  </span>
+                  <span className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    {simulationState.successRate}%
+                  </span>
+                </div>
+                <Progress
+                  value={simulationState.successRate}
+                  className="h-2 bg-gray-200 dark:bg-gray-700"
+                />
+              </div>
+              {/* Class Prosperity */}
+              <div className="">
+                <div
+                  className={cn(
+                    'outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-2 transition-colors duration-300',
+                    getSuccessBackgroundColor(
+                      simulationState.lowerClassProsperity
+                    )
+                  )}
+                >
+                  <div className="flex justify-between">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Lower Class Prosperity
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      {simulationState.lowerClassProsperity}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={simulationState.lowerClassProsperity}
+                    className="h-2 bg-gray-200  dark:bg-gray-700"
+                  />
+                </div>
+
+                <div
+                  className={cn(
+                    'outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-2 transition-colors duration-300',
+                    getSuccessBackgroundColor(
+                      simulationState.middleClassStability
+                    )
+                  )}
+                >
+                  <div className="flex justify-between">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Middle Class Stability
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      {simulationState.middleClassStability}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={simulationState.middleClassStability}
+                    className="h-2 bg-gray-200 dark:bg-gray-700"
+                  />
+                </div>
+
+                <div
+                  className={cn(
+                    'outline-2 outline-gray-300 dark:outline-gray-700 rounded-lg p-2 transition-colors duration-300',
+                    getSuccessBackgroundColor(simulationState.upperClassWealth)
+                  )}
+                >
+                  <div className="flex justify-between">
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      Upper Class Wealth
+                    </span>
+                    <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      {simulationState.upperClassWealth}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={simulationState.upperClassWealth}
+                    className="h-2 bg-gray-200 dark:bg-gray-700"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Scrollable Bottom Section - Remaining 50% on mobile */}
+        <div className="flex-1 overflow-y-auto pb-4 pt-4 space-y-4">
+          {/* Scenarios Card */}
+          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
+            <CardHeader className="shrink-0">
+              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+                Scenarios{selectedScenario ? `: ${selectedScenario}` : ''}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Basic Scenarios
+                  </h3>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {PRESETS.slice(0, 12).map((preset) => (
+                      <TooltipProvider key={preset.name}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                'w-full text-lg font-bold transition-colors',
+                                PRESET_COLORS[
+                                  preset.name as keyof typeof PRESET_COLORS
+                                ]
+                              )}
+                              onClick={() => applyPreset(preset)}
+                            >
+                              {preset.name}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium">{preset.description}</p>
+                            {preset.historicalOutcome && (
+                              <p className="mt-2 text-sm text-gray-300">
+                                {preset.historicalOutcome}
+                              </p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    Historical Scenarios
+                  </h3>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {PRESETS.slice(12).map((preset) => (
+                      <TooltipProvider key={preset.name}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                'w-full text-lg font-bold transition-colors',
+                                PRESET_COLORS[
+                                  preset.name as keyof typeof PRESET_COLORS
+                                ]
+                              )}
+                              onClick={() => applyPreset(preset)}
+                            >
+                              {preset.name}
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="font-medium">{preset.description}</p>
+                            {preset.historicalOutcome && (
+                              <p className="mt-2 text-sm text-gray-300">
+                                {preset.historicalOutcome}
+                              </p>
+                            )}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Societal Factors Card */}
+          <Card className="bg-gray-100/90 dark:bg-gray-800/90 backdrop-blur-sm border-gray-300 dark:border-gray-700 shadow-lg">
+            <CardHeader className="shrink-0">
+              <CardTitle className="text-2xl text-gray-900 dark:text-gray-100">
+                Societal Factors
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-1">
+                {factors.map((factor) => (
+                  <div
+                    key={factor.id}
+                    className="space-y-1 rounded-2xl p-2 border border-gray-400 dark:border-gray-600"
+                  >
+                    <div className="flex justify-between">
+                      <span className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                        {factor.name}
+                      </span>
+                      <span className="text-base text-gray-700 dark:text-gray-300">
+                        {factor.value}%
+                      </span>
+                    </div>
+                    <Slider
+                      id={factor.id}
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={[factor.value]}
+                      onValueChange={(value) =>
+                        handleFactorChange(factor.id, value[0])
+                      }
+                      className="[&_[role=slider]]:bg-gray-900 dark:[&_[role=slider]]:bg-gray-300"
+                    />
+                    <p className="font-bold pl-6 text-gray-700 dark:text-gray-300">
+                      {factor.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex-1 md:grid md:grid-cols-2 md:gap-6 md:p-4 md:min-h-0">
         {/* Left Column - Scenarios and Societal Factors */}
         <div className="flex flex-col gap-6 min-h-0">
           {/* Scenarios Card */}
